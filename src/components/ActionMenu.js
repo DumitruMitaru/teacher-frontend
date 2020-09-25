@@ -19,7 +19,7 @@ import {
 import { useSnackbar } from 'notistack';
 
 import { useDialogContext } from '../components/GlobalDialog';
-import MessageForm from '../components/MessageForm';
+import StudentForm from '../components/StudentForm';
 import useApi from '../hooks/useApi';
 
 const useStyles = makeStyles(theme => ({
@@ -33,12 +33,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ActionMenu = ({
-	message: { id, publicId, phoneNumber, defaultText },
+	student: { id, phoneNumber, firstName, lastName, email },
 	onEdited,
-	onDeleted,
 }) => {
 	const [loading, setLoading] = useState(false);
-	const { changePublicId, deleteMessage, editMessage, getUrl } = useApi();
+	const { editStudent } = useApi();
 	const { enqueueSnackbar } = useSnackbar();
 	const { showDialog } = useDialogContext();
 	const classes = useStyles();
@@ -73,59 +72,26 @@ const ActionMenu = ({
 			<Menu open={open} onClose={closeMenu} anchorEl={anchorEl}>
 				{[
 					{
-						icon: <FileCopy />,
-						label: 'Copy URL',
-						onClick: () => {
-							window.navigator.clipboard
-								.writeText(getUrl(`message/${publicId}/send`))
-								.then(() =>
-									enqueueSnackbar('URL Copied to Clipboard!')
-								);
-						},
-					},
-					{
-						icon: <CropFree />,
-						label: 'View QR Code',
-						onClick: () =>
-							window.open(
-								`${window.location.origin}/message/${publicId}/qr-code`
-							),
-					},
-					{
-						icon: <Link />,
-						label: 'Change URL',
-						onClick: decorateRequest(
-							() => changePublicId(id).then(onEdited),
-							'URL Changed!'
-						),
-					},
-					{
 						icon: <Create />,
-						label: 'Edit Message',
+						label: 'Edit ' + firstName,
 						onClick: () => {
-							showDialog(MessageForm, {
-								title: 'Edit Message',
+							showDialog(StudentForm, {
+								title: 'Edit Student',
 								initialValues: {
+									firstName,
+									lastName,
+									email,
 									phoneNumber,
-									defaultText,
 								},
 								onSubmit: decorateRequest(
-									editedMessage =>
-										editMessage(id, editedMessage).then(
+									editedStudent =>
+										editStudent(id, editedStudent).then(
 											onEdited
 										),
-									'Message Edited!'
+									'Student Edited!'
 								),
 							});
 						},
-					},
-					{
-						icon: <DeleteForever />,
-						label: 'Delete Message',
-						onClick: decorateRequest(
-							() => deleteMessage(id).then(onDeleted),
-							'Message Deleted!'
-						),
 					},
 				].map(({ icon, label, onClick }) => (
 					<MenuItem

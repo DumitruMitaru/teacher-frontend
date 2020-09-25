@@ -8,36 +8,7 @@ import SupportEmail from './SupportEmail';
 import PrimaryButton from './PrimaryButton';
 
 const Page = ({ children }) => {
-	const {
-		error,
-		isAuthenticated,
-		loginWithRedirect,
-		logout,
-		user,
-		isLoading,
-	} = useAuth0();
-
-	const history = useHistory();
-
-	if (isLoading) {
-		return (
-			<Grid container justify="center">
-				<CircularProgress />
-			</Grid>
-		);
-	}
-
-	if (
-		error?.error_description ===
-		'Please verify your email before logging in.'
-	) {
-		history.push('/verify-email');
-	} else if (!isAuthenticated) {
-		history.push('/');
-	} else {
-		history.push(`/profile/${user.email}`);
-	}
-
+	const { logout, isAuthenticated, loginWithRedirect } = useAuth0();
 	return (
 		<Grid
 			container

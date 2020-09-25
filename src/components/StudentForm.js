@@ -13,25 +13,30 @@ import { LinkedPhoneNumberInput } from './PhoneNumber';
 import { LinkedTextInput } from './TextInput';
 import Dialog from './Dialog';
 import PrimaryButton from './PrimaryButton';
+import GridContainer from './GridContainer';
 
 const validationSchema = yup.object().shape({
-	defaultText: yup
+	firstName: yup.string().max(50).required('Please enter a first name'),
+	lastName: yup.string().max(50).required('Please enter a last name.'),
+	email: yup
 		.string()
-		.max(250, 'Default text must be at most 250 characters')
-		.required('Please enter the default text'),
+		.email('Please enter a valid email address.')
+		.required('Please enter an email address.'),
 	phoneNumber: yup
 		.string()
 		.matches(/^[0-9]{10}$/, 'Please enter a valid phone number')
 		.required('Please enter a phone number'),
 });
 
-const MessageForm = ({ open, onClose, title, initialValues, onSubmit }) => {
+const StudentForm = ({ open, onClose, title, initialValues, onSubmit }) => {
 	return (
 		<Dialog open={open} onClose={onClose}>
 			<Formik
 				initialValues={{
-					defaultText: `You're link has been hit! Time for some 🎂!`,
 					phoneNumber: '',
+					email: '',
+					firstName: '',
+					lastName: '',
 					...initialValues,
 				}}
 				validationSchema={validationSchema}
@@ -49,14 +54,18 @@ const MessageForm = ({ open, onClose, title, initialValues, onSubmit }) => {
 					<Form>
 						<DialogTitle>{title}</DialogTitle>
 						<DialogContent>
-							<Grid container direction="column" spacing={4}>
-								<Grid item>
-									<LinkedPhoneNumberInput name="phoneNumber" />
-								</Grid>
-								<Grid item>
-									<LinkedTextInput name="defaultText" />
-								</Grid>
-							</Grid>
+							<GridContainer>
+								<LinkedTextInput name="firstName" />
+								<LinkedTextInput name="lastName" />
+							</GridContainer>
+							<GridContainer>
+								<LinkedPhoneNumberInput name="phoneNumber" />
+								<LinkedTextInput
+									name="email"
+									label="Email Address"
+									type="email"
+								/>
+							</GridContainer>
 						</DialogContent>
 						<DialogActions>
 							<PrimaryButton
@@ -81,4 +90,4 @@ const MessageForm = ({ open, onClose, title, initialValues, onSubmit }) => {
 	);
 };
 
-export default MessageForm;
+export default StudentForm;

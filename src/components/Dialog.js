@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	paper: {
 		[theme.breakpoints.up('sm')]: {
-			minWidth: 400,
+			minWidth: 500,
 		},
 	},
 }));

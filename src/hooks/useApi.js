@@ -32,14 +32,10 @@ const useApi = () => {
 
 	// prettier-ignore
 	return {
-		changePublicId: messageId => makeRequest('put', `message/${messageId}/change-publicId`),
-		createMessage: message => makeRequest('post', 'message', message),
-		deleteMessage: messageId => makeRequest('delete', `message/${messageId}`),
-		editMessage: (messageId, message) => makeRequest('put', `message/${messageId}`, message),
-		getMessages: () => makeRequest('get', 'message'),
-		getUrl,
+		createStudent: student => makeRequest('post', 'student', student),
+		editStudent: (id, student) => makeRequest('put', `student/${id}`, student),
+		getStudents: () => makeRequest('get', 'student'),
 		getUser: () => makeRequest('get', 'user'),
-		sendMessage: messageId => makeRequest('get', `message/${messageId}/send`),
 	};
 };
 

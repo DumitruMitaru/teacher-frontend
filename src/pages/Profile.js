@@ -8,7 +8,7 @@ import { PhoneNumber } from '../components/PhoneNumber';
 import { useDialogContext } from '../components/GlobalDialog';
 import ActionMenu from '../components/ActionMenu';
 import LoadingPage from '../components/LoadingPage';
-import MessageForm from '../components/MessageForm';
+import StudentForm from '../components/StudentForm';
 import Page from '../components/Page';
 import PrimaryButton from '../components/PrimaryButton';
 import SupportEmail from '../components/SupportEmail';
@@ -17,26 +17,18 @@ import Table from '../components/Table';
 import useApi from '../hooks/useApi';
 
 const Profile = () => {
-	const [loading, setLoading] = useState(false);
-	const [messages, setMessages] = useState([]);
+	const [students, setStudents] = useState([]);
 	const [user, setUser] = useState({});
-	const { getUrl, createMessage, getMessages, getUser } = useApi();
 	const { enqueueSnackbar } = useSnackbar();
 	const { showDialog } = useDialogContext();
+	const { createStudent, getStudents, getUser } = useApi();
 
 	useEffect(() => {
-		setLoading(true);
-		Promise.all([getMessages(), getUser()])
-			.then(([messages, user]) => {
-				setMessages(messages);
-				setUser(user);
-			})
-			.finally(() => setLoading(false));
+		Promise.all([getUser(), getStudents()]).then(([user, students]) => {
+			setUser(user);
+			setStudents(students);
+		});
 	}, []);
-
-	if (loading) {
-		return <LoadingPage />;
-	}
 
 	return (
 		<Page>
@@ -46,17 +38,6 @@ const Profile = () => {
 						<Typography variant="h4" align="center" gutterBottom>
 							Welcome {user.email}
 						</Typography>
-						<Alert
-							severity={
-								user.messagesRemaining <= 10
-									? 'warning'
-									: 'info'
-							}
-						>
-							You have {user.messagesRemaining} messages left to
-							send. If you'd like more, please contact us at{' '}
-							<SupportEmail />.
-						</Alert>
 					</Box>
 					<Box m={1}>
 						<Grid
@@ -68,33 +49,48 @@ const Profile = () => {
 								startIcon={<Add />}
 								display="block"
 								onClick={() =>
-									showDialog(MessageForm, {
-										title: 'Create A New Message',
-										onSubmit: async message => {
-											await createMessage(
-												message
-											).then(message =>
-												setMessages(messages => [
-													message,
-													...messages,
+									showDialog(StudentForm, {
+										title: 'New Student',
+										onSubmit: async student => {
+											await createStudent(
+												student
+											).then(student =>
+												setStudents(students => [
+													student,
+													...students,
 												])
 											);
-											enqueueSnackbar('Message Created!');
+											enqueueSnackbar('Student Created!');
 										},
 									})
 								}
 							>
-								New Message
+								New Student
 							</PrimaryButton>
 						</Grid>
 					</Box>
-					{messages.length === 0 ? (
+					{students.length === 0 ? (
 						<Alert severity="info">
-							You have not created any messages.
+							You do not have any students.
 						</Alert>
 					) : (
 						<Table
 							columns={[
+								{
+									title: 'First Name',
+									field: 'firstName',
+								},
+								{
+									title: 'Last Name',
+									field: 'lastName',
+								},
+								{
+									title: 'Email',
+									field: 'email',
+									render: ({ email }) => (
+										<a href={`mailto:${email}`}>{email}</a>
+									),
+								},
 								{
 									title: 'Phone Number',
 									field: 'phoneNumber',
@@ -103,53 +99,19 @@ const Profile = () => {
 									),
 								},
 								{
-									title: 'Default Text',
-									field: 'defaultText',
-								},
-								{
-									title: 'URL',
-									field: 'publicId',
-									render: ({ publicId }) => (
-										<Typography
-											component={props => (
-												<a
-													href={getUrl(
-														`message/${publicId}/send`
-													)}
-													target="_blank"
-													rel="noopener noreferrer"
-													{...props}
-												/>
-											)}
-											variant="caption"
-										>
-											{getUrl(`message/${publicId}/send`)}
-										</Typography>
-									),
-								},
-								{
 									title: 'Actions',
 									sorting: false,
 									align: 'center',
-									render: message => (
+									render: student => (
 										<ActionMenu
-											message={message}
-											onEdited={editedMessage =>
-												setMessages(messages =>
-													messages.map(message =>
-														message.id ===
-														editedMessage.id
-															? editedMessage
-															: message
-													)
-												)
-											}
-											onDeleted={deletedMessage =>
-												setMessages(messages =>
-													messages.filter(
-														message =>
-															message.id !==
-															deletedMessage.id
+											student={student}
+											onEdited={editedStudent =>
+												setStudents(students =>
+													students.map(student =>
+														student.id ===
+														editedStudent.id
+															? editedStudent
+															: student
 													)
 												)
 											}
@@ -157,7 +119,7 @@ const Profile = () => {
 									),
 								},
 							]}
-							data={messages}
+							data={students}
 						/>
 					)}
 				</CardContent>

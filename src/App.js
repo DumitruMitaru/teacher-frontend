@@ -1,44 +1,77 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MuiThemeProvider } from '@material-ui/core';
+import { createBrowserHistory } from 'history';
+import { MuiThemeProvider, Grid, CircularProgress } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
+import {
+	Auth0Provider,
+	withAuthenticationRequired,
+	useAuth0,
+} from '@auth0/auth0-react';
 
 import { DialogContextProvider } from './components/GlobalDialog';
 import LandingPage from './pages/LandingPage';
-import MessageQRCode from './pages/MessageQRCode';
 import Profile from './pages/Profile';
 import VerifyEmail from './pages/VerifyEmail';
 
 import theme from './theme';
 
+export const history = createBrowserHistory();
+
+const onRedirectCallback = appState => {
+	// Use the router's history module to replace the url
+	history.replace(appState?.returnTo || window.location.pathname);
+};
+
+const Protected = ({ component }) => {
+	const { error, isLoading } = useAuth0();
+
+	if (isLoading) {
+		return (
+			<Grid container justify="center">
+				<CircularProgress />
+			</Grid>
+		);
+	}
+
+	if (
+		error?.error_description ===
+		'Please verify your email before logging in.'
+	) {
+		return <VerifyEmail />;
+	}
+
+	return React.createElement(withAuthenticationRequired(component));
+};
+
 function App() {
 	return (
-		<SnackbarProvider
-			maxSnack={3}
-			autoHideDuration={3000}
-			variant="success"
+		<Auth0Provider
+			domain={process.env.REACT_APP_AUTH0_DOMAIN}
+			clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+			redirectUri={`${window.location.origin}/profile`}
+			audience={process.env.REACT_APP_AUTH0_API_ID}
+			onRedirectCallback={onRedirectCallback}
 		>
-			<MuiThemeProvider theme={theme}>
-				<DialogContextProvider>
-					<Router>
-						<Switch>
-							<Route path="/profile/:email">
-								<Profile />
-							</Route>
-							<Route path="/message/:publicId/qr-code">
-								<MessageQRCode />
-							</Route>
-							<Route path="/verify-email">
-								<VerifyEmail />
-							</Route>
-							<Route path="/">
-								<LandingPage />
-							</Route>
-						</Switch>
-					</Router>
-				</DialogContextProvider>
-			</MuiThemeProvider>
-		</SnackbarProvider>
+			<SnackbarProvider
+				maxSnack={3}
+				autoHideDuration={3000}
+				variant="success"
+			>
+				<MuiThemeProvider theme={theme}>
+					<DialogContextProvider>
+						<Router history={history}>
+							<Switch>
+								<Route path="/profile">
+									<Protected component={Profile} />
+								</Route>
+								<Route component={LandingPage} path="/" />
+							</Switch>
+						</Router>
+					</DialogContextProvider>
+				</MuiThemeProvider>
+			</SnackbarProvider>
+		</Auth0Provider>
 	);
 }
 
