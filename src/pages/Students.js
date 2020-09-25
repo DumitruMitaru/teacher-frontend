@@ -16,7 +16,7 @@ import Table from '../components/Table';
 
 import useApi from '../hooks/useApi';
 
-const Profile = () => {
+const Student = () => {
 	const [students, setStudents] = useState([]);
 	const [user, setUser] = useState({});
 	const { enqueueSnackbar } = useSnackbar();
@@ -128,4 +128,4 @@ const Profile = () => {
 	);
 };
 
-export default Profile;
+export default Student;

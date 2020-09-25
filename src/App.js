@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { MuiThemeProvider, Grid, CircularProgress } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
@@ -10,8 +10,9 @@ import {
 } from '@auth0/auth0-react';
 
 import { DialogContextProvider } from './components/GlobalDialog';
+import Calendar from './pages/Calendar';
 import LandingPage from './pages/LandingPage';
-import Profile from './pages/Profile';
+import Students from './pages/Students';
 import VerifyEmail from './pages/VerifyEmail';
 
 import theme from './theme';
@@ -62,8 +63,11 @@ function App() {
 					<DialogContextProvider>
 						<Router history={history}>
 							<Switch>
-								<Route path="/profile">
-									<Protected component={Profile} />
+								<Route path="/students">
+									<Protected component={Students} />
+								</Route>
+								<Route path="/calendar">
+									<Protected component={Calendar} />
 								</Route>
 								<Route component={LandingPage} path="/" />
 							</Switch>
