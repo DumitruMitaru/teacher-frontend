@@ -32,8 +32,11 @@ const useApi = () => {
 
 	// prettier-ignore
 	return {
+		createEvent: event => makeRequest('post', 'event', event),
 		createStudent: student => makeRequest('post', 'student', student),
+		editEvent: (id, event) => makeRequest('put', `event/${id}`, event),
 		editStudent: (id, student) => makeRequest('put', `student/${id}`, student),
+		getEvents: () => makeRequest('get', 'event'),
 		getStudents: () => makeRequest('get', 'student'),
 		getUser: () => makeRequest('get', 'user'),
 	};
