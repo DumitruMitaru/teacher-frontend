@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-	Create,
-	CropFree,
-	DeleteForever,
-	FileCopy,
-	Link,
-	MoreVert,
-} from '@material-ui/icons';
+import { Create, MoreVert } from '@material-ui/icons';
 import {
 	CircularProgress,
 	IconButton,

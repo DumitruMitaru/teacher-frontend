@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { pink } from '@material-ui/core/colors';
-import { useAuth0 } from '@auth0/auth0-react';
 
 import SupportEmail from './SupportEmail';
 import AppBar from './AppBar';

@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-	format,
-	addDays,
-	addMinutes,
-	parseISO,
-	differenceInMilliseconds,
-} from 'date-fns';
+import { format, parseISO, differenceInMilliseconds } from 'date-fns';
+import { Grid, IconButton, Typography } from '@material-ui/core';
+import { Create, DeleteForever } from '@material-ui/icons';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -15,6 +11,7 @@ import { useSnackbar } from 'notistack';
 
 import { useDialogContext } from '../components/GlobalDialog';
 import EventForm from '../components/EventForm';
+import OnHover from '../components/OnHover';
 
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
@@ -22,7 +19,7 @@ import useOnMount from '../hooks/useOnMount';
 const Calendar = () => {
 	const { enqueueSnackbar } = useSnackbar();
 	const { showDialog } = useDialogContext();
-	const { getEvents, createEvent, editEvent } = useApi();
+	const { getEvents, createEvent, editEvent, deleteEvent } = useApi();
 
 	const { loading, data: events, setData: setEvents } = useOnMount(getEvents);
 
@@ -66,30 +63,97 @@ const Calendar = () => {
 				endTime: '23:59',
 			}}
 			selectMirror
-			eventClick={({
+			eventContent={({
 				event: {
-					_def: { extendedProps },
+					_def: { extendedProps: event },
 				},
+				timeText,
 			}) => {
-				showDialog(EventForm, {
-					title: `Edit Event: ${extendedProps.title}`,
-					initialEvent: extendedProps,
-					onSubmit: editedEvent => {
-						return editEvent(extendedProps.id, editedEvent).then(
-							() => {
-								setEvents(
-									events.map(event =>
-										event.id === extendedProps.id
-											? editedEvent
-											: event
-									)
-								);
-								enqueueSnackbar('Event Edited');
-							}
-						);
-					},
-				});
+				return (
+					<OnHover
+						offHover={
+							<>
+								<Typography>{event.title}</Typography>
+								<Typography>{timeText}</Typography>
+							</>
+						}
+						onHover={
+							<Grid container justify="flex-end">
+								<IconButton
+									color="inherit"
+									onClick={() =>
+										showDialog(EventForm, {
+											title: `Edit Event: ${event.title}`,
+											initialEvent: event,
+											onSubmit: editedEvent => {
+												return editEvent(
+													event.id,
+													editedEvent
+												).then(
+													({ id: editedEventId }) => {
+														setEvents(
+															events.map(event =>
+																event.id ===
+																editedEventId
+																	? editedEvent
+																	: event
+															)
+														);
+														enqueueSnackbar(
+															'Event Edited'
+														);
+													}
+												);
+											},
+										})
+									}
+								>
+									<Create />
+								</IconButton>
+								<IconButton
+									color="inherit"
+									onClick={() =>
+										deleteEvent(event.id).then(() => {
+											setEvents(
+												events.filter(
+													({ id }) => id !== event.id
+												)
+											);
+											enqueueSnackbar('Event Deleted');
+										})
+									}
+								>
+									<DeleteForever />
+								</IconButton>
+							</Grid>
+						}
+					/>
+				);
 			}}
+			// eventClick={({
+			// 	event: {
+			// 		_def: { extendedProps },
+			// 	},
+			// }) => {
+			// 	showDialog(EventForm, {
+			// 		title: `Edit Event: ${extendedProps.title}`,
+			// 		initialEvent: extendedProps,
+			// 		onSubmit: editedEvent => {
+			// 			return editEvent(extendedProps.id, editedEvent).then(
+			// 				() => {
+			// 					setEvents(
+			// 						events.map(event =>
+			// 							event.id === extendedProps.id
+			// 								? editedEvent
+			// 								: event
+			// 						)
+			// 					);
+			// 					enqueueSnackbar('Event Edited');
+			// 				}
+			// 			);
+			// 		},
+			// 	});
+			// }}
 			events={events.map(event => {
 				if (event.isRecurring) {
 					return {

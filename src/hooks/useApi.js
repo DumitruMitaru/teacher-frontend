@@ -34,6 +34,7 @@ const useApi = () => {
 	return {
 		createEvent: event => makeRequest('post', 'event', event),
 		createStudent: student => makeRequest('post', 'student', student),
+		deleteEvent: (id, ) => makeRequest('delete', `event/${id}`),
 		editEvent: (id, event) => makeRequest('put', `event/${id}`, event),
 		editStudent: (id, student) => makeRequest('put', `student/${id}`, student),
 		getEvents: () => makeRequest('get', 'event'),

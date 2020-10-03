@@ -5,7 +5,6 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	Grid,
 } from '@material-ui/core';
 import * as yup from 'yup';
 

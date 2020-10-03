@@ -5,7 +5,6 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	Grid,
 } from '@material-ui/core';
 import { endOfDay, getDay } from 'date-fns';
 import * as yup from 'yup';
@@ -15,7 +14,6 @@ import { LinkedTextInput } from './TextInput';
 import Dialog from './Dialog';
 import PrimaryButton from './PrimaryButton';
 import { LinkedSingleSelect } from './SingleSelect';
-import { LinkedCheckbox } from './Checkbox';
 import { LinkedMultiSelect } from './MultiSelect';
 import { LinkedDateTimePicker } from './DateTimePicker';
 import GridContainer from './GridContainer';
@@ -56,7 +54,10 @@ const EventForm = ({ open, onClose, title, initialEvent, onSubmit }) => {
 	let initialValues = {
 		title: initialEvent.title,
 		startDate: initialEvent.startDate,
-		Students: initialEvent.Students.map(({ id }) => id),
+		Students:
+			initialEvent.Students?.map(student =>
+				typeof student === 'string' ? student : student.id
+			) ?? [],
 	};
 
 	if (initialEvent.isRecurring) {
@@ -119,7 +120,12 @@ const EventForm = ({ open, onClose, title, initialEvent, onSubmit }) => {
 							};
 						}
 
-						await onSubmit({ ...event, title, Students });
+						await onSubmit({
+							...event,
+							id: initialEvent.id,
+							title,
+							Students,
+						});
 						onClose();
 					} catch (err) {
 					} finally {
