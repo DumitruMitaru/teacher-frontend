@@ -1,11 +1,11 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography, CircularProgress } from '@material-ui/core';
 import { pink } from '@material-ui/core/colors';
 
 import SupportEmail from './SupportEmail';
 import AppBar from './AppBar';
 
-const Page = ({ children }) => {
+const Page = ({ loading, children }) => {
 	return (
 		<>
 			<Grid
@@ -23,7 +23,13 @@ const Page = ({ children }) => {
 						marginLeft="auto"
 						marginRight="auto"
 					>
-						{children}
+						{loading ? (
+							<Grid container justify="center">
+								<CircularProgress />
+							</Grid>
+						) : (
+							children
+						)}
 					</Box>
 				</div>
 				<footer

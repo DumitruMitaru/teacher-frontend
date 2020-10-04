@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { Add } from '@material-ui/icons';
@@ -13,23 +13,20 @@ import PrimaryButton from '../components/PrimaryButton';
 import Table from '../components/Table';
 
 import useApi from '../hooks/useApi';
+import useOnMount from '../hooks/useOnMount';
 
 const Student = () => {
-	const [students, setStudents] = useState([]);
-	const [user, setUser] = useState({});
 	const { enqueueSnackbar } = useSnackbar();
 	const { showDialog } = useDialogContext();
 	const { createStudent, getStudents, getUser } = useApi();
-
-	useEffect(() => {
-		Promise.all([getUser(), getStudents()]).then(([user, students]) => {
-			setUser(user);
-			setStudents(students);
-		});
-	}, []);
+	const {
+		loading,
+		data: [user, students] = [{}, []],
+		setData,
+	} = useOnMount(() => Promise.all([getUser(), getStudents()]));
 
 	return (
-		<Page>
+		<Page loading={loading}>
 			<Card>
 				<CardContent>
 					<Box margin={8} marginTop={2}>
@@ -53,9 +50,9 @@ const Student = () => {
 											await createStudent(
 												student
 											).then(student =>
-												setStudents(students => [
-													student,
-													...students,
+												setData([
+													user,
+													[student, ...students],
 												])
 											);
 											enqueueSnackbar('Student Created!');
@@ -104,14 +101,15 @@ const Student = () => {
 										<ActionMenu
 											student={student}
 											onEdited={editedStudent =>
-												setStudents(students =>
+												setData([
+													user,
 													students.map(student =>
 														student.id ===
 														editedStudent.id
 															? editedStudent
 															: student
-													)
-												)
+													),
+												])
 											}
 										/>
 									),
