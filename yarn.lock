@@ -1234,14 +1234,6 @@
     "@fullcalendar/common" "~5.3.1"
     tslib "^2.0.0"
 
-"@fullcalendar/rrule@^5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/rrule/-/rrule-5.3.1.tgz#9dea576797355182f478c34e49a60228e8399d98"
-  integrity sha512-44m7IN0D/lBduBc4pOVfpVbnZoVIwHmkPCTUOQ2azYwAhEg9+H+mddyv44hdts++WN9wjULc0GyFJBhMEjN30g==
-  dependencies:
-    "@fullcalendar/common" "~5.3.1"
-    tslib "^2.0.0"
-
 "@fullcalendar/timegrid@^5.3.1":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@fullcalendar/timegrid/-/timegrid-5.3.1.tgz#c56d3c62b366eea701ef002adbbf999713648d9b"
@@ -7331,11 +7323,6 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-luxon@^1.21.3:
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.25.0.tgz#d86219e90bc0102c0eb299d65b2f5e95efe1fe72"
-  integrity sha512-hEgLurSH8kQRjY6i4YLey+mcKVAWXbDNlZRmM6AgWDJ1cY3atl8Ztf5wEY7VBReFbmGnwQPz7KYJblL8B2k0jQ==
-
 make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-2.1.0.tgz#5f0310e18b8be898cc07009295a30ae41e91e6f5"
@@ -10052,15 +10039,6 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
-
-rrule@^2.6.6:
-  version "2.6.6"
-  resolved "https://registry.yarnpkg.com/rrule/-/rrule-2.6.6.tgz#70031727da4aa648ea0dcc524b6e95f565af063e"
-  integrity sha512-h6tb/hRo9SNv8xKjcvsEfdmhXvElMXsU3Yz0KmqMehUqxP6a4Qjmth2EuL1FsjdawADjajLS0eBbWfsZzn3SIw==
-  dependencies:
-    tslib "^1.10.0"
-  optionalDependencies:
-    luxon "^1.21.3"
 
 rsvp@^4.8.4:
   version "4.8.5"

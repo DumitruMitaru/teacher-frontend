@@ -1,176 +1,165 @@
-import React from 'react';
-import { format, parseISO, differenceInMilliseconds } from 'date-fns';
-import { Grid, IconButton, Typography } from '@material-ui/core';
-import { Create, DeleteForever } from '@material-ui/icons';
+import React, { useState } from 'react';
+import {
+	parseISO,
+	isWithinInterval,
+	differenceInMilliseconds,
+	addMilliseconds,
+} from 'date-fns';
+import { Grid } from '@material-ui/core';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { Create, DeleteForever, FileCopy, PanTool } from '@material-ui/icons';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import rrulePlugin from '@fullcalendar/rrule';
 import { useSnackbar } from 'notistack';
 
-import { useDialogContext } from '../components/GlobalDialog';
-import EventForm from '../components/EventForm';
-import OnHover from '../components/OnHover';
+import PrimaryButton from '../components/PrimaryButton';
 
-import useApi from '../hooks/useApi';
-import useOnMount from '../hooks/useOnMount';
-
-const Calendar = () => {
+const Calendar = ({
+	events,
+	onEventClick,
+	onEventCreate,
+	onEventDateChange,
+	onEventsDelete,
+	onEventsPaste,
+}) => {
+	const [
+		{ selectedEvents, selectedFromStartDate },
+		setSelectedEvents,
+	] = useState({});
+	const [eventsCopied, setEventsCopied] = useState(false);
+	const [mode, setMode] = useState();
 	const { enqueueSnackbar } = useSnackbar();
-	const { showDialog } = useDialogContext();
-	const { getEvents, createEvent, editEvent, deleteEvent } = useApi();
 
-	const { loading, data: events, setData: setEvents } = useOnMount(getEvents);
-
-	if (loading) {
-		return 'Loading...';
-	}
+	const eventResizeOrDrop = ({ event: resizedEvent }) => {
+		onEventDateChange({
+			...resizedEvent._def.extendedProps,
+			startDate: resizedEvent.start,
+			endDate: resizedEvent.end,
+		});
+	};
+	events = events.map(({ startDate, endDate, ...event }) => ({
+		startDate:
+			typeof startDate === 'string' ? parseISO(startDate) : startDate,
+		endDate: typeof endDate === 'string' ? parseISO(endDate) : endDate,
+		...event,
+	}));
 
 	return (
-		<FullCalendar
-			headerToolbar={{
-				center: 'dayGridMonth,timeGridWeek,timeGridDay', // buttons for switching between views
-			}}
-			plugins={[
-				rrulePlugin,
-				timeGridPlugin,
-				interactionPlugin,
-				dayGridPlugin,
-			]}
-			initialView="timeGridWeek"
-			select={({ start, end }) => {
-				showDialog(EventForm, {
-					title: `New Event on ${format(start, 'MMMM Lo')}`,
-					initialEvent: {
-						startDate: start,
-						endDate: end,
-					},
-					onSubmit: event => {
-						return createEvent(event).then(event => {
-							setEvents([...events, event]);
-							enqueueSnackbar('Event Created');
+		<>
+			<Grid container justify="space-between">
+				<ToggleButtonGroup
+					value={mode}
+					exclusive
+					onChange={(_e, mode) => setMode(mode)}
+				>
+					<ToggleButton value="edit">
+						<Create />
+					</ToggleButton>
+					<ToggleButton value="select">
+						<PanTool />
+					</ToggleButton>
+				</ToggleButtonGroup>
+				{mode === 'select' && selectedEvents?.length > 0 && (
+					<Grid item>
+						<PrimaryButton
+							startIcon={<FileCopy />}
+							onClick={() => {
+								enqueueSnackbar('Events Copied');
+								setEventsCopied(true);
+							}}
+						>
+							Copy
+						</PrimaryButton>
+						<PrimaryButton
+							startIcon={<DeleteForever />}
+							onClick={() => {
+								onEventsDelete(
+									selectedEvents.map(({ id }) => id)
+								);
+
+								setSelectedEvents({});
+							}}
+						>
+							Delete
+						</PrimaryButton>
+					</Grid>
+				)}
+			</Grid>
+			<FullCalendar
+				headerToolbar={{
+					center: 'dayGridMonth,timeGridWeek,timeGridDay', // buttons for switching between views
+				}}
+				plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
+				initialView="timeGridWeek"
+				selectMinDistance={1}
+				selectable={!!mode}
+				editable={mode === 'edit'}
+				selectMirror={mode === 'edit'}
+				eventResize={eventResizeOrDrop}
+				eventDrop={eventResizeOrDrop}
+				select={({ start, end }) => {
+					if (mode === 'select') {
+						const selectedEvents = events.filter(({ startDate }) =>
+							isWithinInterval(startDate, {
+								start,
+								end,
+							})
+								? true
+								: false
+						);
+						setSelectedEvents({
+							selectedEvents,
+							selectedFromStartDate: start,
 						});
-					},
-				});
-			}}
-			dateClick={function (arg) {
-				console.log(arg.date.toUTCString());
-			}}
-			selectable
-			selectConstraint={{
-				startTime: '00:01',
-				endTime: '23:59',
-			}}
-			selectMirror
-			eventContent={({
-				event: {
-					_def: { extendedProps: event },
-				},
-				timeText,
-			}) => {
-				return (
-					<OnHover
-						offHover={
-							<>
-								<Typography>{event.title}</Typography>
-								<Typography>{timeText}</Typography>
-							</>
-						}
-						onHover={
-							<Grid container justify="flex-end">
-								<IconButton
-									color="inherit"
-									onClick={() =>
-										showDialog(EventForm, {
-											title: `Edit Event: ${event.title}`,
-											initialEvent: event,
-											onSubmit: editedEvent => {
-												return editEvent(
-													event.id,
-													editedEvent
-												).then(
-													({ id: editedEventId }) => {
-														setEvents(
-															events.map(event =>
-																event.id ===
-																editedEventId
-																	? editedEvent
-																	: event
-															)
-														);
-														enqueueSnackbar(
-															'Event Edited'
-														);
-													}
-												);
-											},
-										})
-									}
-								>
-									<Create />
-								</IconButton>
-								<IconButton
-									color="inherit"
-									onClick={() =>
-										deleteEvent(event.id).then(() => {
-											setEvents(
-												events.filter(
-													({ id }) => id !== event.id
-												)
-											);
-											enqueueSnackbar('Event Deleted');
-										})
-									}
-								>
-									<DeleteForever />
-								</IconButton>
-							</Grid>
-						}
-					/>
-				);
-			}}
-			// eventClick={({
-			// 	event: {
-			// 		_def: { extendedProps },
-			// 	},
-			// }) => {
-			// 	showDialog(EventForm, {
-			// 		title: `Edit Event: ${extendedProps.title}`,
-			// 		initialEvent: extendedProps,
-			// 		onSubmit: editedEvent => {
-			// 			return editEvent(extendedProps.id, editedEvent).then(
-			// 				() => {
-			// 					setEvents(
-			// 						events.map(event =>
-			// 							event.id === extendedProps.id
-			// 								? editedEvent
-			// 								: event
-			// 						)
-			// 					);
-			// 					enqueueSnackbar('Event Edited');
-			// 				}
-			// 			);
-			// 		},
-			// 	});
-			// }}
-			events={events.map(event => {
-				if (event.isRecurring) {
+					} else if (mode === 'edit') {
+						onEventCreate({
+							startDate: start,
+							endDate: end,
+						});
+					}
+				}}
+				dateClick={({ date }) => {
+					if (
+						mode === 'select' &&
+						eventsCopied &&
+						selectedEvents?.length
+					) {
+						const shiftAmount = differenceInMilliseconds(
+							date,
+							selectedFromStartDate
+						);
+						const copiedEvents = selectedEvents.map(
+							({ startDate, endDate, title, Students }) => ({
+								title,
+								Students,
+								startDate: addMilliseconds(
+									startDate,
+									shiftAmount
+								),
+								endDate: addMilliseconds(endDate, shiftAmount),
+							})
+						);
+						onEventsPaste(copiedEvents);
+						setSelectedEvents({});
+						setEventsCopied(false);
+					}
+				}}
+				eventClick={
+					mode === 'edit'
+						? ({
+								event: {
+									_def: { extendedProps: event },
+								},
+						  }) => {
+								onEventClick(event);
+						  }
+						: undefined
+				}
+				events={events.map(event => {
 					return {
-						title: event.title,
-						rrule: event.rrule,
-						duration: {
-							milliseconds: differenceInMilliseconds(
-								parseISO(event.endTime),
-								parseISO(event.startTime)
-							),
-						},
-						extendedProps: {
-							...event,
-						},
-					};
-				} else {
-					return {
+						id: event.id,
 						title: event.title,
 						start: event.startDate,
 						end: event.endDate,
@@ -178,9 +167,9 @@ const Calendar = () => {
 							...event,
 						},
 					};
-				}
-			})}
-		/>
+				})}
+			/>
+		</>
 	);
 };
 

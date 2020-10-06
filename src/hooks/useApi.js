@@ -16,12 +16,12 @@ const useApi = () => {
 			throw err;
 		});
 
-		const config = { headers: { Authorization: `Bearer ${token}` } };
-		const url = getUrl(endpoint);
-		const restArgs =
-			method === 'get' || method === 'delete' ? [config] : [body, config];
-
-		return axios[method](url, ...restArgs)
+		return axios({
+			method,
+			url: getUrl(endpoint),
+			data: body,
+			headers: { Authorization: `Bearer ${token}` },
+		})
 			.then(response => response.data)
 			.catch(err => {
 				console.error(err);
@@ -32,9 +32,10 @@ const useApi = () => {
 
 	// prettier-ignore
 	return {
+		bulkDeleteEvents: eventIds => makeRequest('delete', `event/bulk`, eventIds),
+		copyEvents: events => makeRequest('post', 'event/copy', events),
 		createEvent: event => makeRequest('post', 'event', event),
 		createStudent: student => makeRequest('post', 'student', student),
-		deleteEvent: (id, ) => makeRequest('delete', `event/${id}`),
 		editEvent: (id, event) => makeRequest('put', `event/${id}`, event),
 		editStudent: (id, student) => makeRequest('put', `student/${id}`, student),
 		getEvents: () => makeRequest('get', 'event'),
