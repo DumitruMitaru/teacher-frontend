@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { Add } from '@material-ui/icons';
@@ -16,6 +17,7 @@ import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 
 const Student = () => {
+	const history = useHistory();
 	const { enqueueSnackbar } = useSnackbar();
 	const { showDialog } = useDialogContext();
 	const { createStudent, getStudents, getUser } = useApi();
@@ -50,7 +52,7 @@ const Student = () => {
 											await createStudent(
 												student
 											).then(student =>
-												setData([
+												setData(([user, students]) => [
 													user,
 													[student, ...students],
 												])
@@ -70,6 +72,9 @@ const Student = () => {
 						</Alert>
 					) : (
 						<Table
+							onRowClick={(_, { publicProfileId }) =>
+								history.push(`/students/${publicProfileId}`)
+							}
 							columns={[
 								{
 									title: 'First Name',
@@ -101,7 +106,7 @@ const Student = () => {
 										<ActionMenu
 											student={student}
 											onEdited={editedStudent =>
-												setData([
+												setData(([user, students]) => [
 													user,
 													students.map(student =>
 														student.id ===

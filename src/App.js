@@ -12,6 +12,7 @@ import {
 import { DialogContextProvider } from './components/GlobalDialog';
 import Calendar from './pages/Calendar';
 import LandingPage from './pages/LandingPage';
+import StudentProfile from './pages/StudentProfile';
 import Students from './pages/Students';
 import VerifyEmail from './pages/VerifyEmail';
 
@@ -63,12 +64,17 @@ function App() {
 					<DialogContextProvider>
 						<Router history={history}>
 							<Switch>
-								<Route path="/students">
+								<Route path="/students" exact>
 									<Protected component={Students} />
 								</Route>
-								<Route path="/calendar">
+								<Route path="/calendar" exact>
 									<Protected component={Calendar} />
 								</Route>
+								<Route
+									component={StudentProfile}
+									path="/students/:publicProfileId"
+									exact
+								/>
 								<Route component={LandingPage} path="/" />
 							</Switch>
 						</Router>

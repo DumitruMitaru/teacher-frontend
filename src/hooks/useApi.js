@@ -35,10 +35,13 @@ const useApi = () => {
 		bulkDeleteEvents: eventIds => makeRequest('delete', `event/bulk`, eventIds),
 		copyEvents: events => makeRequest('post', 'event/copy', events),
 		createEvent: event => makeRequest('post', 'event', event),
+		createPracticeNote: ( note) => makeRequest('post', `practice-note`, note),
 		createStudent: student => makeRequest('post', 'student', student),
 		editEvent: (id, event) => makeRequest('put', `event/${id}`, event),
+		editPracticeNote: (id, practiceNote) => makeRequest('put', `practice-note/${id}`, practiceNote),
 		editStudent: (id, student) => makeRequest('put', `student/${id}`, student),
 		getEvents: () => makeRequest('get', 'event'),
+		getStudent: (id) => makeRequest('get', `student/${id}`),
 		getStudents: () => makeRequest('get', 'student'),
 		getUser: () => makeRequest('get', 'user'),
 	};

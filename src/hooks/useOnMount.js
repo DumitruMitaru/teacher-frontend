@@ -8,7 +8,8 @@ const useOnMount = (request, dependencies = []) => {
 		refetch: fetchData,
 	});
 
-	const setData = data => setState(state => ({ ...state, data }));
+	const setData = fn =>
+		setState(({ data, ...state }) => ({ ...state, data: fn(data) }));
 
 	function fetchData() {
 		setState({ ...state, loading: true });
