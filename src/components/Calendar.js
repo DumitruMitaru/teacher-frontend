@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
 	parseISO,
 	isWithinInterval,
@@ -17,7 +18,9 @@ import { useSnackbar } from 'notistack';
 import PrimaryButton from '../components/PrimaryButton';
 
 const Calendar = ({
+	disabled,
 	events,
+	initialView,
 	onEventClick,
 	onEventCreate,
 	onEventDateChange,
@@ -48,54 +51,56 @@ const Calendar = ({
 
 	return (
 		<>
-			<Grid container justify="space-between">
-				<ToggleButtonGroup
-					value={mode}
-					exclusive
-					onChange={(_e, mode) => setMode(mode)}
-				>
-					<ToggleButton value="edit">
-						<Create />
-					</ToggleButton>
-					<ToggleButton value="select">
-						<PanTool />
-					</ToggleButton>
-				</ToggleButtonGroup>
-				{mode === 'select' && selectedEvents?.length > 0 && (
-					<Grid item>
-						<PrimaryButton
-							startIcon={<FileCopy />}
-							onClick={() => {
-								enqueueSnackbar('Events Copied');
-								setEventsCopied(true);
-							}}
-						>
-							Copy
-						</PrimaryButton>
-						<PrimaryButton
-							startIcon={<DeleteForever />}
-							onClick={() => {
-								onEventsDelete(
-									selectedEvents.map(({ id }) => id)
-								);
+			{!disabled && (
+				<Grid container justify="space-between">
+					<ToggleButtonGroup
+						value={mode}
+						exclusive
+						onChange={(_e, mode) => setMode(mode)}
+					>
+						<ToggleButton value="edit">
+							<Create />
+						</ToggleButton>
+						<ToggleButton value="select">
+							<PanTool />
+						</ToggleButton>
+					</ToggleButtonGroup>
+					{mode === 'select' && selectedEvents?.length > 0 && (
+						<Grid item>
+							<PrimaryButton
+								startIcon={<FileCopy />}
+								onClick={() => {
+									enqueueSnackbar('Events Copied');
+									setEventsCopied(true);
+								}}
+							>
+								Copy
+							</PrimaryButton>
+							<PrimaryButton
+								startIcon={<DeleteForever />}
+								onClick={() => {
+									onEventsDelete(
+										selectedEvents.map(({ id }) => id)
+									);
 
-								setSelectedEvents({});
-							}}
-						>
-							Delete
-						</PrimaryButton>
-					</Grid>
-				)}
-			</Grid>
+									setSelectedEvents({});
+								}}
+							>
+								Delete
+							</PrimaryButton>
+						</Grid>
+					)}
+				</Grid>
+			)}
 			<FullCalendar
 				headerToolbar={{
 					center: 'dayGridMonth,timeGridWeek,timeGridDay', // buttons for switching between views
 				}}
 				plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
-				initialView="timeGridWeek"
+				initialView={initialView}
 				selectMinDistance={1}
-				selectable={!!mode}
-				editable={mode === 'edit'}
+				selectable={!!mode && !disabled}
+				editable={mode === 'edit' && !disabled}
 				selectMirror={mode === 'edit'}
 				eventResize={eventResizeOrDrop}
 				eventDrop={eventResizeOrDrop}
@@ -173,6 +178,24 @@ const Calendar = ({
 	);
 };
 
-Calendar.propTypes = {};
+Calendar.propTypes = {
+	disabled: PropTypes.bool,
+	events: PropTypes.array,
+	onEventClick: PropTypes.func,
+	onEventCreate: PropTypes.func,
+	onEventDateChange: PropTypes.func,
+	onEventsDelete: PropTypes.func,
+	onEventsPaste: PropTypes.func,
+	initialView: PropTypes.oneOf([
+		'dayGridMonth',
+		'timeGridWeek',
+		'timeGridDay',
+	]),
+};
+
+Calendar.defaultProps = {
+	events: [],
+	initialView: 'timeGridWeek',
+};
 
 export default Calendar;

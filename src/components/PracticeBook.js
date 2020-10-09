@@ -7,6 +7,7 @@ import {
 	Grid,
 	IconButton,
 	MobileStepper,
+	Tooltip,
 	Typography,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -39,19 +40,20 @@ const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
 				) : (
 					<>
 						<Grid container justify="space-between">
-							<IconButton
-								onClick={() =>
-									showDialog(PracticeNoteForm, {
-										title: 'Edit Practice Note',
-										initialValues:
-											practiceNotes[activeStep],
-										onSubmit: onEdit,
-									})
-								}
-							>
-								<Create />
-							</IconButton>
-
+							<Tooltip title="Edit Note" placement="top">
+								<IconButton
+									onClick={() =>
+										showDialog(PracticeNoteForm, {
+											title: 'Edit Practice Note',
+											initialValues:
+												practiceNotes[activeStep],
+											onSubmit: onEdit,
+										})
+									}
+								>
+									<Create />
+								</IconButton>
+							</Tooltip>
 							<Typography variant="h6" gutterBottom align="right">
 								{format(
 									parseISO(

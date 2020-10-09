@@ -49,3 +49,7 @@ code {
 }
 
 /* -- END WRAPPING PLACEHOLDER FIX -- */
+
+.MuiTooltip-tooltip {
+	font-size: 14px !important;
+}

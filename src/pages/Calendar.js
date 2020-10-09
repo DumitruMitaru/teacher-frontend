@@ -29,7 +29,7 @@ const CalendarPage = () => {
 				onEventsDelete={eventsToDeleteIds => {
 					enqueueSnackbar('Deleting Events...', { variant: 'info' });
 					bulkDeleteEvents(eventsToDeleteIds).then(() => {
-						setEvents(
+						setEvents(events =>
 							events.filter(
 								event => !eventsToDeleteIds.includes(event.id)
 							)
@@ -40,7 +40,7 @@ const CalendarPage = () => {
 				onEventDateChange={editedEvent => {
 					enqueueSnackbar('Saving...', { variant: 'info' });
 					editEvent(editedEvent.id, editedEvent).then(() => {
-						setEvents(
+						setEvents(events =>
 							events.map(event =>
 								event.id === editedEvent.id
 									? editedEvent
@@ -57,7 +57,7 @@ const CalendarPage = () => {
 						onSubmit: editedEvent => {
 							return editEvent(editedEvent.id, editedEvent).then(
 								() => {
-									setEvents(
+									setEvents(events =>
 										events.map(event =>
 											event.id === editedEvent.id
 												? editedEvent
@@ -76,7 +76,7 @@ const CalendarPage = () => {
 						initialValues: event,
 						onSubmit: event => {
 							return createEvent(event).then(() => {
-								setEvents([...events, event]);
+								setEvents(events => [...events, event]);
 								enqueueSnackbar('Event Created');
 							});
 						},
@@ -85,7 +85,7 @@ const CalendarPage = () => {
 				onEventsPaste={copiedEvents => {
 					enqueueSnackbar('Saving...', { variant: 'info' });
 					copyEvents(copiedEvents).then(copiedEvents => {
-						setEvents([...events, ...copiedEvents]);
+						setEvents(events => [...events, ...copiedEvents]);
 						enqueueSnackbar('Events Copied');
 					});
 				}}
