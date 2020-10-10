@@ -39,40 +39,43 @@ const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
 					<Alert severity="info">No practice notes</Alert>
 				) : (
 					<>
-						<Grid container justify="space-between">
-							<Tooltip title="Edit Note" placement="top">
-								<IconButton
-									onClick={() =>
-										showDialog(PracticeNoteForm, {
-											title: 'Edit Practice Note',
-											initialValues:
-												practiceNotes[activeStep],
-											onSubmit: onEdit,
-										})
-									}
-								>
-									<Create />
-								</IconButton>
-							</Tooltip>
-							<Typography variant="h6" gutterBottom align="right">
-								{format(
-									parseISO(
-										practiceNotes[activeStep].createdAt
-									),
-									'EEEE MMM Mo yyyy'
-								)}
-							</Typography>
-						</Grid>
-						<Typography style={{ minHeight: 200, padding: 48 }}>
-							<div
-								dangerouslySetInnerHTML={{
-									__html: practiceNotes[activeStep].text,
-								}}
-							/>
+						<Typography variant="h6" align="right">
+							{format(
+								parseISO(practiceNotes[activeStep].createdAt),
+								'EEEE MMM Mo yyyy'
+							)}
 						</Typography>
+						<Typography
+							style={{ minHeight: 200, padding: 48 }}
+							dangerouslySetInnerHTML={{
+								__html: practiceNotes[activeStep].text,
+							}}
+						/>
 					</>
 				)}
-				<Grid container justify="flex-end" style={{ marginTop: 16 }}>
+				<Grid
+					container
+					justify="space-between"
+					alignItems="center"
+					style={{ marginTop: 16 }}
+				>
+					<Tooltip title="Edit Note" placement="top">
+						<Button
+							size="small"
+							variant="outlined"
+							disabled={practiceNotes.length === 0}
+							onClick={() =>
+								showDialog(PracticeNoteForm, {
+									title: 'Edit Practice Note',
+									initialValues: practiceNotes[activeStep],
+									onSubmit: onEdit,
+								})
+							}
+							startIcon={<Create />}
+						>
+							Edit
+						</Button>
+					</Tooltip>
 					<PrimaryButton
 						size="small"
 						startIcon={<Add />}
