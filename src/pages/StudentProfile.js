@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-	Grid,
-	Box,
-	Typography,
-	useMediaQuery,
-	useTheme,
-} from '@material-ui/core';
+import { Box, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
 
 import Calendar from '../components/Calendar';
 import Page from '../components/Page';
@@ -36,7 +29,6 @@ const StudentProfile = () => {
 	const theme = useTheme();
 	const upMd = useMediaQuery(theme.breakpoints.up('md'));
 
-	const { enqueueSnackbar } = useSnackbar();
 	return (
 		<Page loading={loading}>
 			<Typography variant="h2" align="center" gutterBottom>
@@ -53,22 +45,21 @@ const StudentProfile = () => {
 							createPracticeNote({
 								...practiceNote,
 								StudentId: id,
-							}).then(practiceNote => {
+							}).then(practiceNote =>
 								setData(({ PracticeNotes, ...data }) => ({
 									...data,
 									PracticeNotes: [
 										...PracticeNotes,
 										practiceNote,
 									],
-								}));
-								enqueueSnackbar('Practice Note Saved');
-							})
+								}))
+							)
 						}
 						onEdit={practiceNote =>
 							editPracticeNote(
 								practiceNote.id,
 								practiceNote
-							).then(practiceNote => {
+							).then(practiceNote =>
 								setData(({ PracticeNotes, ...data }) => ({
 									...data,
 									PracticeNotes: PracticeNotes.map(note =>
@@ -76,9 +67,8 @@ const StudentProfile = () => {
 											? practiceNote
 											: note
 									),
-								}));
-								enqueueSnackbar('Practice Note Saved');
-							})
+								}))
+							)
 						}
 					/>
 				</div>

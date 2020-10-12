@@ -9,12 +9,8 @@ import {
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 
-import { LinkedTextInput } from './TextInput';
 import Dialog from './Dialog';
 import PrimaryButton from './PrimaryButton';
-import { LinkedMultiSelect } from './MultiSelect';
-import { LinkedDateTimePicker } from './DateTimePicker';
-import GridContainer from './GridContainer';
 
 const DeleteDialog = ({ open, onClose, onDelete }) => {
 	return (

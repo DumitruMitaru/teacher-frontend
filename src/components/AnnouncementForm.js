@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core';
 import * as yup from 'yup';
 
-import { LinkedPhoneNumberInput } from './PhoneNumber';
 import { LinkedTextInput } from './TextInput';
 import Dialog from './Dialog';
 import PrimaryButton from './PrimaryButton';

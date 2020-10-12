@@ -12,7 +12,6 @@ import * as yup from 'yup';
 import { LinkedCheckboxGroup } from './CheckboxGroup';
 import Dialog from './Dialog';
 import PrimaryButton from './PrimaryButton';
-import GridContainer from './GridContainer';
 
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
