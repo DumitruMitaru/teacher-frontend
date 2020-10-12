@@ -2,8 +2,7 @@ import React from 'react';
 import { parseISO, format } from 'date-fns';
 import { Box, Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { Create, Add, DeleteForever } from '@material-ui/icons';
-import { useSnackbar } from 'notistack';
+import { Create, Add, DeleteForever, Send } from '@material-ui/icons';
 
 import { useDialogContext } from '../components/GlobalDialog';
 import AnnouncementForm from '../components/AnnouncementForm';
@@ -11,12 +10,12 @@ import Page from '../components/Page';
 import PrimaryButton from '../components/PrimaryButton';
 import Table from '../components/Table';
 import DeleteDialog from '../components/DeleteDialog';
+import SendAnnouncementDialog from '../components/SendAnnouncementDialog';
 
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 
 const Announcement = () => {
-	const { enqueueSnackbar } = useSnackbar();
 	const { showDialog } = useDialogContext();
 	const {
 		createAnnouncement,
@@ -39,6 +38,10 @@ const Announcement = () => {
 						<Typography variant="h4" align="center" gutterBottom>
 							Welcome {user.email}
 						</Typography>
+						<Alert severity="info">
+							Only the latest 4 announcements will be shown on the
+							student profile page.
+						</Alert>
 					</Box>
 					<Box m={1}>
 						<Grid
@@ -65,9 +68,6 @@ const Announcement = () => {
 														],
 													]
 												)
-											);
-											enqueueSnackbar(
-												'Announcement Created!'
 											);
 										},
 									})
@@ -153,6 +153,15 @@ const Announcement = () => {
 														]
 													)
 												),
+										});
+									},
+								},
+								{
+									icon: () => <Send />,
+									tooltip: 'Send text message',
+									onClick: (e, announcement) => {
+										showDialog(SendAnnouncementDialog, {
+											announcement,
 										});
 									},
 								},

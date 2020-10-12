@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack';
 
 const useApi = () => {
 	const { getAccessTokenSilently } = useAuth0();
-	const { enqueueSnackbar } = useSnackbar();
+	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 	const getUrl = endpoint =>
 		`${process.env.REACT_APP_API_PROTOCOL}://${process.env.REACT_APP_API_DOMAIN}/${endpoint}`;
@@ -16,15 +16,47 @@ const useApi = () => {
 			throw err;
 		});
 
+		let loadingMessage;
+		let successMessage;
+		switch (method) {
+			case 'put':
+			case 'post':
+				loadingMessage = 'Saving...';
+				successMessage = 'Saved';
+				break;
+
+			case 'delete':
+				loadingMessage = 'Deleting...';
+				successMessage = 'Deleted';
+				break;
+			default:
+				break;
+		}
+
+		let loadingNotificationKey;
+
+		if (loadingMessage) {
+			loadingNotificationKey = enqueueSnackbar(loadingMessage, {
+				variant: 'info',
+			});
+		}
+
 		return axios({
 			method,
 			url: getUrl(endpoint),
 			data: body,
 			headers: { Authorization: `Bearer ${token}` },
 		})
-			.then(response => response.data)
+			.then(response => {
+				closeSnackbar(loadingNotificationKey);
+				if (successMessage) {
+					enqueueSnackbar(successMessage);
+				}
+				return response.data;
+			})
 			.catch(err => {
 				console.error(err);
+				closeSnackbar(loadingNotificationKey);
 				enqueueSnackbar(err.message, { variant: 'error' });
 				throw err;
 			});
@@ -48,6 +80,7 @@ const useApi = () => {
 		getStudent: id => makeRequest('get', `student/${id}`),
 		getStudents: () => makeRequest('get', 'student'),
 		getUser: () => makeRequest('get', 'user'),
+		sendAnnouncement: (id, students) => makeRequest('post', `announcement/${id}/send`, students),
 	};
 };
 

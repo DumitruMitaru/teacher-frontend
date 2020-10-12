@@ -1,25 +1,9 @@
 import React from 'react';
 import { format, parseISO } from 'date-fns';
 import { yellow } from '@material-ui/core/colors';
-import {
-	Tooltip,
-	Card,
-	CardContent,
-	IconButton,
-	Typography,
-	DialogContent,
-	DialogTitle,
-	DialogActions,
-	Button,
-} from '@material-ui/core';
-import { Visibility } from '@material-ui/icons';
-
-import { useDialogContext } from '../components/GlobalDialog';
-import Dialog from './Dialog';
+import { Card, CardContent, Typography } from '@material-ui/core';
 
 const Note = ({ text, date }) => {
-	const { showDialog } = useDialogContext();
-
 	return (
 		<Card
 			style={{

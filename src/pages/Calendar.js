@@ -26,69 +26,57 @@ const CalendarPage = () => {
 		<Page loading={loading}>
 			<Calendar
 				events={events}
-				onEventsDelete={eventsToDeleteIds => {
-					enqueueSnackbar('Deleting Events...', { variant: 'info' });
-					bulkDeleteEvents(eventsToDeleteIds).then(() => {
+				onEventsDelete={eventsToDeleteIds =>
+					bulkDeleteEvents(eventsToDeleteIds).then(() =>
 						setEvents(events =>
 							events.filter(
 								event => !eventsToDeleteIds.includes(event.id)
 							)
-						);
-						enqueueSnackbar('Events Deleted');
-					});
-				}}
-				onEventDateChange={editedEvent => {
-					enqueueSnackbar('Saving...', { variant: 'info' });
-					editEvent(editedEvent.id, editedEvent).then(() => {
+						)
+					)
+				}
+				onEventDateChange={editedEvent =>
+					editEvent(editedEvent.id, editedEvent).then(() =>
 						setEvents(events =>
 							events.map(event =>
 								event.id === editedEvent.id
 									? editedEvent
 									: event
 							)
-						);
-						enqueueSnackbar('Event Edited');
-					});
-				}}
+						)
+					)
+				}
 				onEventClick={event => {
 					showDialog(EventForm, {
 						title: `Edit Event: ${event.title}`,
 						initialValues: event,
-						onSubmit: editedEvent => {
-							return editEvent(editedEvent.id, editedEvent).then(
-								() => {
-									setEvents(events =>
-										events.map(event =>
-											event.id === editedEvent.id
-												? editedEvent
-												: event
-										)
-									);
-									enqueueSnackbar('Event Edited');
-								}
-							);
-						},
+						onSubmit: editedEvent =>
+							editEvent(editedEvent.id, editedEvent).then(() =>
+								setEvents(events =>
+									events.map(event =>
+										event.id === editedEvent.id
+											? editedEvent
+											: event
+									)
+								)
+							),
 					});
 				}}
-				onEventCreate={event => {
+				onEventCreate={event =>
 					showDialog(EventForm, {
 						title: 'Create New Event',
 						initialValues: event,
-						onSubmit: event => {
-							return createEvent(event).then(() => {
-								setEvents(events => [...events, event]);
-								enqueueSnackbar('Event Created');
-							});
-						},
-					});
-				}}
-				onEventsPaste={copiedEvents => {
-					enqueueSnackbar('Saving...', { variant: 'info' });
-					copyEvents(copiedEvents).then(copiedEvents => {
-						setEvents(events => [...events, ...copiedEvents]);
-						enqueueSnackbar('Events Copied');
-					});
-				}}
+						onSubmit: event =>
+							createEvent(event).then(() =>
+								setEvents(events => [...events, event])
+							),
+					})
+				}
+				onEventsPaste={copiedEvents =>
+					copyEvents(copiedEvents).then(copiedEvents =>
+						setEvents(events => [...events, ...copiedEvents])
+					)
+				}
 			/>
 		</Page>
 	);

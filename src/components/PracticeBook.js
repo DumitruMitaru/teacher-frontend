@@ -42,7 +42,7 @@ const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
 						<Typography variant="h6" align="right">
 							{format(
 								parseISO(practiceNotes[activeStep].createdAt),
-								'EEEE MMM Mo yyyy'
+								'EEEE MMM do yyyy'
 							)}
 						</Typography>
 						<Typography
