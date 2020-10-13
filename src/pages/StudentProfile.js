@@ -10,6 +10,7 @@ import Note from '../components/Note';
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 import GridContainer from '../components/GridContainer';
+import { Alert } from '@material-ui/lab';
 
 const StudentProfile = () => {
 	const { publicProfileId } = useParams();
@@ -77,11 +78,17 @@ const StudentProfile = () => {
 					<Typography variant="h5" gutterBottom>
 						Announcements
 					</Typography>
-					<GridContainer columns={2}>
-						{Announcements.map(({ text, createdAt }) => (
-							<Note text={text} date={createdAt} />
-						))}
-					</GridContainer>
+					{Announcements.length === 0 ? (
+						<Alert severity="info">
+							There are no announcements
+						</Alert>
+					) : (
+						<GridContainer columns={2}>
+							{Announcements.map(({ text, createdAt }) => (
+								<Note text={text} date={createdAt} />
+							))}
+						</GridContainer>
+					)}
 				</div>
 			</GridContainer>
 			<GridContainer>
