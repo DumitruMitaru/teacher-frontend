@@ -6,9 +6,9 @@ import {
 	differenceInMilliseconds,
 	addMilliseconds,
 } from 'date-fns';
-import { Grid } from '@material-ui/core';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import { Create, DeleteForever, FileCopy, PanTool } from '@material-ui/icons';
+import { Grid, useTheme } from '@material-ui/core';
+import { Alert, ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { Create, DeleteForever, FileCopy } from '@material-ui/icons';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -27,11 +27,11 @@ const Calendar = ({
 	onEventsDelete,
 	onEventsPaste,
 }) => {
+	const theme = useTheme();
 	const [
 		{ selectedEvents, selectedFromStartDate },
 		setSelectedEvents,
 	] = useState({});
-	const [eventsCopied, setEventsCopied] = useState(false);
 	const [mode, setMode] = useState();
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -52,31 +52,37 @@ const Calendar = ({
 	return (
 		<>
 			{!disabled && (
-				<Grid container justify="space-between">
+				<Grid
+					container
+					justify="space-between"
+					style={{ marginBottom: 16 }}
+				>
 					<ToggleButtonGroup
 						value={mode}
 						exclusive
-						onChange={(_e, mode) => setMode(mode)}
+						onChange={(_e, mode) => {
+							setMode(mode);
+							setSelectedEvents({});
+						}}
 					>
 						<ToggleButton value="edit">
 							<Create />
 						</ToggleButton>
 						<ToggleButton value="select">
-							<PanTool />
+							<FileCopy />
 						</ToggleButton>
 					</ToggleButtonGroup>
 					{mode === 'select' && selectedEvents?.length > 0 && (
-						<Grid item>
+						<Grid container item style={{ width: 'auto' }}>
+							<Alert severity="info">
+								Click on a date to duplicate the selected
+								events.
+							</Alert>
 							<PrimaryButton
-								startIcon={<FileCopy />}
-								onClick={() => {
-									enqueueSnackbar('Events Copied');
-									setEventsCopied(true);
+								style={{
+									marginLeft: 8,
+									backgroundColor: theme.palette.error[500],
 								}}
-							>
-								Copy
-							</PrimaryButton>
-							<PrimaryButton
 								startIcon={<DeleteForever />}
 								onClick={() => {
 									onEventsDelete(
@@ -86,7 +92,7 @@ const Calendar = ({
 									setSelectedEvents({});
 								}}
 							>
-								Delete
+								Delete Events
 							</PrimaryButton>
 						</Grid>
 					)}
@@ -114,10 +120,13 @@ const Calendar = ({
 								? true
 								: false
 						);
-						setSelectedEvents({
-							selectedEvents,
-							selectedFromStartDate: start,
-						});
+						if (selectedEvents.length > 0) {
+							setSelectedEvents({
+								selectedEvents,
+								selectedFromStartDate: start,
+							});
+							enqueueSnackbar('Events Copied!');
+						}
 					} else if (mode === 'edit') {
 						onEventCreate({
 							startDate: start,
@@ -126,11 +135,7 @@ const Calendar = ({
 					}
 				}}
 				dateClick={({ date }) => {
-					if (
-						mode === 'select' &&
-						eventsCopied &&
-						selectedEvents?.length
-					) {
+					if (mode === 'select' && selectedEvents?.length) {
 						const shiftAmount = differenceInMilliseconds(
 							date,
 							selectedFromStartDate
@@ -148,7 +153,6 @@ const Calendar = ({
 						);
 						onEventsPaste(copiedEvents);
 						setSelectedEvents({});
-						setEventsCopied(false);
 					}
 				}}
 				eventClick={
