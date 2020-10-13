@@ -35,7 +35,7 @@ const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
 		<Card>
 			<CardContent>
 				{practiceNotes.length === 0 ? (
-					<Alert severity="info">No practice notes</Alert>
+					<Alert severity="info">No practice notes created</Alert>
 				) : (
 					<>
 						<Typography variant="h6" align="right">

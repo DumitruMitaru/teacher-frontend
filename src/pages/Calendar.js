@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSnackbar } from 'notistack';
 
 import { useDialogContext } from '../components/GlobalDialog';
 import EventForm from '../components/EventForm';
@@ -18,7 +17,6 @@ const CalendarPage = () => {
 		getEvents,
 	} = useApi();
 	const { showDialog } = useDialogContext();
-	const { enqueueSnackbar } = useSnackbar();
 
 	const { loading, data: events, setData: setEvents } = useOnMount(getEvents);
 

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Create, MoreVert } from '@material-ui/icons';
 import {
-	CircularProgress,
+	AccountBox,
+	Create,
+	DeleteForever,
+	MoreVert,
+} from '@material-ui/icons';
+import {
 	IconButton,
 	ListItemIcon,
 	makeStyles,
@@ -9,9 +13,9 @@ import {
 	MenuItem,
 	Typography,
 } from '@material-ui/core';
-import { useSnackbar } from 'notistack';
 
 import { useDialogContext } from '../components/GlobalDialog';
+import DeleteDialog from '../components/DeleteDialog';
 import StudentForm from '../components/StudentForm';
 import useApi from '../hooks/useApi';
 
@@ -26,12 +30,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ActionMenu = ({
-	student: { id, phoneNumber, firstName, lastName, email },
+	student: { id, phoneNumber, publicProfileId, firstName, lastName, email },
 	onEdited,
+	onDeleted,
 }) => {
-	const [loading, setLoading] = useState(false);
-	const { editStudent } = useApi();
-	const { enqueueSnackbar } = useSnackbar();
+	const { deleteStudent, editStudent } = useApi();
 	const { showDialog } = useDialogContext();
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -46,16 +49,6 @@ const ActionMenu = ({
 		event.stopPropagation();
 		setAnchorEl(null);
 	};
-
-	const decorateRequest = (request, successMessage) => async (...args) => {
-		setLoading(true);
-		await request(...args).finally(() => setLoading(false));
-		enqueueSnackbar(successMessage);
-	};
-
-	if (loading) {
-		return <CircularProgress size={30} />;
-	}
 
 	return (
 		<>
@@ -76,15 +69,30 @@ const ActionMenu = ({
 									email,
 									phoneNumber,
 								},
-								onSubmit: decorateRequest(
-									editedStudent =>
-										editStudent(id, editedStudent).then(
-											onEdited
-										),
-									'Student Edited!'
-								),
+								onSubmit: editedStudent =>
+									editStudent(id, editedStudent).then(
+										onEdited
+									),
 							});
 						},
+					},
+					{
+						icon: <AccountBox />,
+						label: 'Send Student Profile URL',
+						onClick: () =>
+							(window.location.href = `mailto:${email}?subject=Personal Profile&body=This a link to your personal profile where you can view upcoming lessons, practice notes and announcements. Please bookmark this link \n ${window.location.origin}/students/${publicProfileId}`),
+					},
+					{
+						icon: <DeleteForever />,
+						label: `Delete ${firstName}`,
+						onClick: () =>
+							showDialog(DeleteDialog, {
+								withInput: true,
+								onDelete: () =>
+									deleteStudent(id).then(() =>
+										onDeleted({ id })
+									),
+							}),
 					},
 				].map(({ icon, label, onClick }) => (
 					<MenuItem

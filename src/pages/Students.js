@@ -87,6 +87,7 @@ const Student = () => {
 								{
 									title: 'Email',
 									field: 'email',
+									disableClick: true,
 									render: ({ email }) => (
 										<a href={`mailto:${email}`}>{email}</a>
 									),
@@ -94,6 +95,7 @@ const Student = () => {
 								{
 									title: 'Phone Number',
 									field: 'phoneNumber',
+									disableClick: true,
 									render: ({ phoneNumber }) => (
 										<PhoneNumber value={phoneNumber} />
 									),
@@ -102,6 +104,7 @@ const Student = () => {
 									title: 'Actions',
 									sorting: false,
 									align: 'center',
+									disableClick: true,
 									render: student => (
 										<ActionMenu
 											student={student}
@@ -113,6 +116,16 @@ const Student = () => {
 														editedStudent.id
 															? editedStudent
 															: student
+													),
+												])
+											}
+											onDeleted={deletedStudent =>
+												setData(([user, student]) => [
+													user,
+													student.filter(
+														student =>
+															student.id !==
+															deletedStudent.id
 													),
 												])
 											}

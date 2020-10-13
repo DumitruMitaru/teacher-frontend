@@ -8,15 +8,26 @@ import {
 	Typography,
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
+import * as yup from 'yup';
 
 import Dialog from './Dialog';
 import PrimaryButton from './PrimaryButton';
+import { LinkedTextInput } from './TextInput';
+import GridContainer from './GridContainer';
 
-const DeleteDialog = ({ open, onClose, onDelete }) => {
+const validationSchema = yup.object().shape({
+	text: yup
+		.string()
+		.matches('DELETE')
+		.required('Please type DELETE in all caps'),
+});
+
+const DeleteDialog = ({ withInput, open, onClose, onDelete }) => {
 	return (
 		<Dialog open={open} onClose={onClose}>
 			<Formik
-				initialValues={{}}
+				initialValues={{ text: '' }}
+				validationSchema={withInput ? validationSchema : undefined}
 				onSubmit={async (values, { setSubmitting }) => {
 					try {
 						await onDelete();
@@ -34,8 +45,13 @@ const DeleteDialog = ({ open, onClose, onDelete }) => {
 						</DialogTitle>
 						<DialogContent>
 							<Typography>
+								{withInput &&
+									'Please type DELETE in all caps in the space provided, then press the delete button. '}
 								This action cannot be undone.
 							</Typography>
+							<GridContainer>
+								<LinkedTextInput name="text" label="" />
+							</GridContainer>
 						</DialogContent>
 						<DialogActions>
 							<PrimaryButton
