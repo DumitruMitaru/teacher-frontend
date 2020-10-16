@@ -7,6 +7,7 @@ import Calendar from '../components/Calendar';
 
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
+import DeleteDialog from '../components/DeleteDialog';
 
 const CalendarPage = () => {
 	const {
@@ -25,13 +26,19 @@ const CalendarPage = () => {
 			<Calendar
 				events={events}
 				onEventsDelete={eventsToDeleteIds =>
-					bulkDeleteEvents(eventsToDeleteIds).then(() =>
-						setEvents(events =>
-							events.filter(
-								event => !eventsToDeleteIds.includes(event.id)
-							)
-						)
-					)
+					showDialog(DeleteDialog, {
+						onDelete: () =>
+							bulkDeleteEvents(eventsToDeleteIds).then(() =>
+								setEvents(events =>
+									events.filter(
+										event =>
+											!eventsToDeleteIds.includes(
+												event.id
+											)
+									)
+								)
+							),
+					})
 				}
 				onEventDateChange={editedEvent =>
 					editEvent(editedEvent.id, editedEvent).then(() =>
@@ -65,7 +72,7 @@ const CalendarPage = () => {
 						title: 'Create New Event',
 						initialValues: event,
 						onSubmit: event =>
-							createEvent(event).then(() =>
+							createEvent(event).then(event =>
 								setEvents(events => [...events, event])
 							),
 					})

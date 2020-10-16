@@ -1,8 +1,6 @@
 import React from 'react';
-import { Box, Grid, Typography, CircularProgress } from '@material-ui/core';
-import { pink } from '@material-ui/core/colors';
+import { Box, Grid, CircularProgress } from '@material-ui/core';
 
-import SupportEmail from './SupportEmail';
 import AppBar from './AppBar';
 
 const Page = ({ loading, children }) => {
@@ -32,29 +30,6 @@ const Page = ({ loading, children }) => {
 						)}
 					</Box>
 				</div>
-				<footer
-					style={{
-						alignItems: 'center',
-						backgroundColor: pink[500],
-						boxSizing: 'border-box',
-						color: 'white',
-						display: 'flex',
-						flexWrap: 'wrap',
-						justifyContent: 'space-around',
-						marginTop: 64,
-						minheight: 50,
-						padding: 16,
-						width: '100%',
-					}}
-				>
-					<Typography align="center">
-						Support & Feedback:{' '}
-						<SupportEmail style={{ color: 'white' }} />
-					</Typography>
-					<Typography>
-						Made with <span role="img">💙</span> in PDX
-					</Typography>
-				</footer>
 			</Grid>
 		</>
 	);

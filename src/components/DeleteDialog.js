@@ -49,9 +49,15 @@ const DeleteDialog = ({ withInput, open, onClose, onDelete }) => {
 									'Please type DELETE in all caps in the space provided, then press the delete button. '}
 								This action cannot be undone.
 							</Typography>
-							<GridContainer>
-								<LinkedTextInput name="text" label="" />
-							</GridContainer>
+							{withInput && (
+								<GridContainer>
+									<LinkedTextInput
+										name="text"
+										label=""
+										placeholder="DELETE"
+									/>
+								</GridContainer>
+							)}
 						</DialogContent>
 						<DialogActions>
 							<PrimaryButton

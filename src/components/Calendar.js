@@ -107,6 +107,7 @@ const Calendar = ({
 				selectMinDistance={1}
 				selectable={!!mode && !disabled}
 				editable={mode === 'edit' && !disabled}
+				slotDuration="00:15:00"
 				selectMirror={mode === 'edit'}
 				eventResize={eventResizeOrDrop}
 				eventDrop={eventResizeOrDrop}

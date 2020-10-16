@@ -1,4 +1,5 @@
 import React from 'react';
+import { format } from 'date-fns';
 import { Formik, Form } from 'formik';
 import {
 	Button,
@@ -12,7 +13,6 @@ import { LinkedTextInput } from './TextInput';
 import Dialog from './Dialog';
 import PrimaryButton from './PrimaryButton';
 import { LinkedMultiSelect } from './MultiSelect';
-import { LinkedDateTimePicker } from './DateTimePicker';
 import GridContainer from './GridContainer';
 
 import useApi from '../hooks/useApi';
@@ -59,7 +59,7 @@ const EventForm = ({ open, onClose, title, initialValues = {}, onSubmit }) => {
 					}
 				}}
 			>
-				{({ isSubmitting }) => (
+				{({ values, isSubmitting }) => (
 					<Form>
 						<DialogTitle>{title}</DialogTitle>
 						<DialogContent>
@@ -67,8 +67,22 @@ const EventForm = ({ open, onClose, title, initialValues = {}, onSubmit }) => {
 								<LinkedTextInput name="title" />
 							</GridContainer>
 							<GridContainer>
-								<LinkedDateTimePicker name="startDate" />
-								<LinkedDateTimePicker name="endDate" />
+								<LinkedTextInput
+									value={format(
+										values.startDate,
+										'MMMM do h:mm a'
+									)}
+									name="startDate"
+									disabled
+								/>
+								<LinkedTextInput
+									name="endDate"
+									value={format(
+										values.endDate,
+										'MMMM do h:mm a'
+									)}
+									disabled
+								/>
 							</GridContainer>
 							<GridContainer>
 								<LinkedMultiSelect
