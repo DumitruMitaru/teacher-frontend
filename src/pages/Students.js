@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { Add } from '@material-ui/icons';
-import { useSnackbar } from 'notistack';
 
 import { PhoneNumber } from '../components/PhoneNumber';
 import { useDialogContext } from '../components/GlobalDialog';
@@ -18,7 +17,6 @@ import useOnMount from '../hooks/useOnMount';
 
 const Student = () => {
 	const history = useHistory();
-	const { enqueueSnackbar } = useSnackbar();
 	const { showDialog } = useDialogContext();
 	const { createStudent, getStudents, getUser } = useApi();
 	const {
@@ -57,7 +55,6 @@ const Student = () => {
 													[student, ...students],
 												])
 											);
-											enqueueSnackbar('Student Created!');
 										},
 									})
 								}

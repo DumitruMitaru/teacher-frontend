@@ -6,7 +6,7 @@ import {
 	differenceInMilliseconds,
 	addMilliseconds,
 } from 'date-fns';
-import { Grid, useTheme } from '@material-ui/core';
+import { Grid, Tooltip, useTheme } from '@material-ui/core';
 import { Alert, ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { Create, DeleteForever, FileCopy } from '@material-ui/icons';
 import FullCalendar from '@fullcalendar/react';
@@ -66,10 +66,14 @@ const Calendar = ({
 						}}
 					>
 						<ToggleButton value="edit">
-							<Create />
+							<Tooltip title="Create and edit events">
+								<Create />
+							</Tooltip>
 						</ToggleButton>
 						<ToggleButton value="select">
-							<FileCopy />
+							<Tooltip title="Highlight events to copy and paste, and delete">
+								<FileCopy />
+							</Tooltip>
 						</ToggleButton>
 					</ToggleButtonGroup>
 					{mode === 'select' && selectedEvents?.length > 0 && (
