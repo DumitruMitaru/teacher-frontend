@@ -69,9 +69,6 @@ const Student = () => {
 						</Alert>
 					) : (
 						<Table
-							onRowClick={(_, { publicProfileId }) =>
-								history.push(`/students/${publicProfileId}`)
-							}
 							columns={[
 								{
 									title: 'First Name',

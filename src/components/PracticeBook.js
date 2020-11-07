@@ -35,10 +35,12 @@ const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
 		<Card>
 			<CardContent>
 				{practiceNotes.length === 0 ? (
-					<Alert severity="info">No practice notes created</Alert>
+					<Alert severity="info" style={{ minHeight: 200 }}>
+						No practice notes created
+					</Alert>
 				) : (
 					<>
-						<Typography variant="h6" align="right">
+						<Typography align="right">
 							{format(
 								parseISO(practiceNotes[activeStep].createdAt),
 								'EEEE MMM do yyyy'

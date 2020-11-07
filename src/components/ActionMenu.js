@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
 	AccountBox,
 	Create,
 	DeleteForever,
+	Mail,
 	MoreVert,
 } from '@material-ui/icons';
 import {
@@ -35,6 +37,7 @@ const ActionMenu = ({
 	onDeleted,
 }) => {
 	const { deleteStudent, editStudent } = useApi();
+	const history = useHistory();
 	const { showDialog } = useDialogContext();
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -78,6 +81,12 @@ const ActionMenu = ({
 					},
 					{
 						icon: <AccountBox />,
+						label: 'View Student Profile URL',
+						onClick: () =>
+							history.push(`/students/${publicProfileId}`),
+					},
+					{
+						icon: <Mail />,
 						label: 'Send Student Profile URL',
 						onClick: () =>
 							(window.location.href = `mailto:${email}?subject=Personal Profile&body=This a link to your personal profile where you can view upcoming lessons, practice notes and announcements. Please bookmark this link \n ${window.location.origin}/students/${publicProfileId}`),
