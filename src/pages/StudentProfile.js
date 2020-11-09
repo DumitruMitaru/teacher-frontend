@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Alert } from '@material-ui/lab';
 
 import Calendar from '../components/Calendar';
 import Page from '../components/Page';
@@ -10,10 +12,10 @@ import Note from '../components/Note';
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 import GridContainer from '../components/GridContainer';
-import { Alert } from '@material-ui/lab';
 
 const StudentProfile = () => {
 	const { publicProfileId } = useParams();
+	const { isAuthenticated } = useAuth0();
 	const { editPracticeNote, getStudent, createPracticeNote } = useApi();
 	const {
 		loading,
@@ -42,6 +44,7 @@ const StudentProfile = () => {
 					</Typography>
 					<PracticeBook
 						practiceNotes={PracticeNotes}
+						disabled={!isAuthenticated}
 						onCreate={practiceNote =>
 							createPracticeNote({
 								...practiceNote,
@@ -84,8 +87,12 @@ const StudentProfile = () => {
 						</Alert>
 					) : (
 						<GridContainer columns={2}>
-							{Announcements.map(({ text, createdAt }) => (
-								<Note text={text} date={createdAt} />
+							{Announcements.map(({ text, createdAt }, index) => (
+								<Note
+									text={text}
+									date={createdAt}
+									key={index}
+								/>
 							))}
 						</GridContainer>
 					)}

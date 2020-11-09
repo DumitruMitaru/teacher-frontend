@@ -32,7 +32,7 @@ const Calendar = ({
 		{ selectedEvents, selectedFromStartDate },
 		setSelectedEvents,
 	] = useState({});
-	const [mode, setMode] = useState();
+	const [mode, setMode] = useState('edit');
 	const { enqueueSnackbar } = useSnackbar();
 
 	const eventResizeOrDrop = ({ event: resizedEvent }) => {
@@ -71,7 +71,7 @@ const Calendar = ({
 							</Tooltip>
 						</ToggleButton>
 						<ToggleButton value="select">
-							<Tooltip title="Highlight events to copy and paste, and delete">
+							<Tooltip title="Highlight events to copy, paste, and delete">
 								<FileCopy />
 							</Tooltip>
 						</ToggleButton>

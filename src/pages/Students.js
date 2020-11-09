@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { Add } from '@material-ui/icons';
@@ -16,7 +15,6 @@ import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 
 const Student = () => {
-	const history = useHistory();
 	const { showDialog } = useDialogContext();
 	const { createStudent, getStudents, getUser } = useApi();
 	const {

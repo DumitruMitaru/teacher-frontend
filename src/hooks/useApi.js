@@ -12,8 +12,6 @@ const useApi = () => {
 	const makeRequest = async (method, endpoint, body) => {
 		const token = await getAccessTokenSilently().catch(err => {
 			console.error(err);
-			enqueueSnackbar(err.message, { variant: 'error' });
-			throw err;
 		});
 
 		let loadingMessage;
@@ -78,7 +76,7 @@ const useApi = () => {
 		editStudent: (id, student) => makeRequest('put', `student/${id}`, student),
 		getAnnouncements: () => makeRequest('get', 'announcement'),
 		getEvents: () => makeRequest('get', 'event'),
-		getStudent: id => makeRequest('get', `student/${id}`),
+		getStudent: publicProfileId => makeRequest('get', `student/${publicProfileId}`),
 		getStudents: () => makeRequest('get', 'student'),
 		getUser: () => makeRequest('get', 'user'),
 		sendAnnouncement: (id, students) => makeRequest('post', `announcement/${id}/send`, students),

@@ -17,10 +17,7 @@ import GridContainer from './GridContainer';
 const validationSchema = yup.object().shape({
 	firstName: yup.string().max(50).required('Please enter a first name'),
 	lastName: yup.string().max(50).required('Please enter a last name.'),
-	email: yup
-		.string()
-		.email('Please enter a valid email address.')
-		.required('Please enter an email address.'),
+	email: yup.string().email('Please enter a valid email address.'),
 	phoneNumber: yup
 		.string()
 		.matches(/^[0-9]{10}$/, 'Please enter a valid phone number')

@@ -21,7 +21,7 @@ import { useDialogContext } from '../components/GlobalDialog';
 import PrimaryButton from './PrimaryButton';
 import PracticeNoteForm from './PracticeNoteForm';
 
-const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
+const PracticeBook = ({ practiceNotes = [], onEdit, onCreate, disabled }) => {
 	const [activeStep, setActiveStep] = useState(
 		Math.max(practiceNotes.length - 1, 0)
 	);
@@ -64,7 +64,7 @@ const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
 						<Button
 							size="small"
 							variant="outlined"
-							disabled={practiceNotes.length === 0}
+							disabled={practiceNotes.length === 0 || disabled}
 							onClick={() =>
 								showDialog(PracticeNoteForm, {
 									title: 'Edit Practice Note',
@@ -86,6 +86,7 @@ const PracticeBook = ({ practiceNotes, onEdit, onCreate }) => {
 								onSubmit: onCreate,
 							})
 						}
+						disabled={disabled}
 					>
 						New Practice Note
 					</PrimaryButton>
