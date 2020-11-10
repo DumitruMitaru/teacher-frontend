@@ -17,6 +17,21 @@ import { useSnackbar } from 'notistack';
 
 import PrimaryButton from '../components/PrimaryButton';
 
+const getCalendarTitle = event => {
+	if (event.title || event.Students.length) {
+		return [
+			event.title,
+			...event.Students.map(
+				({ firstName, lastName }) => firstName + ' ' + lastName
+			),
+		]
+			.filter(x => !!x)
+			.join(', ');
+	}
+
+	return 'Untitled Event';
+};
+
 const Calendar = ({
 	disabled,
 	events,
@@ -161,7 +176,7 @@ const Calendar = ({
 					}
 				}}
 				eventClick={
-					mode === 'edit'
+					mode === 'edit' && !disabled
 						? ({
 								event: {
 									_def: { extendedProps: event },
@@ -174,7 +189,7 @@ const Calendar = ({
 				events={events.map(event => {
 					return {
 						id: event.id,
-						title: event.calendarTitle,
+						title: getCalendarTitle(event),
 						start: event.startDate,
 						end: event.endDate,
 						extendedProps: {

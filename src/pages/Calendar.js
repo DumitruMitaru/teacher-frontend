@@ -9,21 +9,6 @@ import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 import DeleteDialog from '../components/DeleteDialog';
 
-const getCalendarTitle = event => {
-	if (event.title || event.Students.length) {
-		return [
-			event.title,
-			...event.Students.map(
-				({ firstName, lastName }) => firstName + ' ' + lastName
-			),
-		]
-			.filter(x => !!x)
-			.join(', ');
-	}
-
-	return 'Untitled Event';
-};
-
 const CalendarPage = () => {
 	const {
 		bulkDeleteEvents,
@@ -42,10 +27,7 @@ const CalendarPage = () => {
 	return (
 		<Page loading={loading}>
 			<Calendar
-				events={events.map(event => ({
-					...event,
-					calendarTitle: getCalendarTitle(event),
-				}))}
+				events={events}
 				onEventsDelete={eventsToDeleteIds =>
 					showDialog(DeleteDialog, {
 						onDelete: () =>
