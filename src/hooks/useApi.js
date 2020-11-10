@@ -69,6 +69,7 @@ const useApi = () => {
 		createPracticeNote: note => makeRequest('post', `practice-note`, note),
 		createStudent: student => makeRequest('post', 'student', student),
 		deleteAnnouncement: id => makeRequest('delete', `announcement/${id}`),
+		deleteEvent: id => makeRequest('delete', `event/${id}`),
 		deleteStudent: id => makeRequest('delete', `student/${id}`),
 		editAnnouncement: (id, announcement) => makeRequest('put', `announcement/${id}`, announcement),
 		editEvent: (id, event) => makeRequest('put', `event/${id}`, event),

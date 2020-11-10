@@ -9,11 +9,14 @@ import {
 } from '@material-ui/core';
 import * as yup from 'yup';
 
-import { LinkedTextInput } from './TextInput';
-import Dialog from './Dialog';
-import PrimaryButton from './PrimaryButton';
 import { LinkedMultiSelect } from './MultiSelect';
+import { LinkedTextInput } from './TextInput';
+import { useDialogContext } from '../components/GlobalDialog';
+import DeleteButton from './DeleteButton';
+import DeleteDialog from './DeleteDialog';
+import Dialog from './Dialog';
 import GridContainer from './GridContainer';
+import PrimaryButton from './PrimaryButton';
 
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
@@ -25,9 +28,17 @@ const validationSchema = yup.object().shape({
 	Students: yup.array().of(yup.string()),
 });
 
-const EventForm = ({ open, onClose, title, initialValues = {}, onSubmit }) => {
+const EventForm = ({
+	open,
+	onClose,
+	title,
+	initialValues = {},
+	onSubmit,
+	onDelete,
+}) => {
 	const { getStudents } = useApi();
 	const { loading, data: students } = useOnMount(getStudents);
+	const { showDialog } = useDialogContext();
 
 	return (
 		<Dialog open={open} onClose={onClose} loading={loading}>
@@ -104,6 +115,17 @@ const EventForm = ({ open, onClose, title, initialValues = {}, onSubmit }) => {
 							>
 								Save
 							</PrimaryButton>
+							{onDelete && (
+								<DeleteButton
+									disabled={isSubmitting}
+									onClick={e => {
+										e.stopPropagation();
+										showDialog(DeleteDialog, {
+											onDelete,
+										});
+									}}
+								/>
+							)}
 							<Button
 								onClick={e => {
 									e.stopPropagation();

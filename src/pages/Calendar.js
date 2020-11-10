@@ -14,6 +14,7 @@ const CalendarPage = () => {
 		bulkDeleteEvents,
 		copyEvents,
 		createEvent,
+		deleteEvent,
 		editEvent,
 		getEvents,
 	} = useApi();
@@ -55,6 +56,12 @@ const CalendarPage = () => {
 					showDialog(EventForm, {
 						title: `Edit Event: ${event.title}`,
 						initialValues: event,
+						onDelete: () =>
+							deleteEvent(event.id).then(() =>
+								setEvents(events =>
+									events.filter(({ id }) => id !== event.id)
+								)
+							),
 						onSubmit: editedEvent =>
 							editEvent(editedEvent.id, editedEvent).then(() =>
 								setEvents(events =>
