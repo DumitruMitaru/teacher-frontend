@@ -174,7 +174,7 @@ const Calendar = ({
 				events={events.map(event => {
 					return {
 						id: event.id,
-						title: event.title,
+						title: event.calendarTitle,
 						start: event.startDate,
 						end: event.endDate,
 						extendedProps: {

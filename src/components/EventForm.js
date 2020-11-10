@@ -22,7 +22,7 @@ import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 
 const validationSchema = yup.object().shape({
-	title: yup.string().max(100).required('Please enter a title'),
+	title: yup.string().max(100),
 	startDate: yup.date().required('Please select a begin date'),
 	endDate: yup.date().required('Please select an end date'),
 	Students: yup.array().of(yup.string()),
