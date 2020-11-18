@@ -13,7 +13,11 @@ const FileUploadInput = ({ value, helperText, error, ...props }) => {
 				<Input type="file" style={{ display: 'none' }} {...props} />
 			</PrimaryButton>
 			{value && (
-				<Typography display="inline" style={{ marginLeft: 8 }}>
+				<Typography
+					display="inline"
+					style={{ marginLeft: 8 }}
+					variant="h5"
+				>
 					{value.name}
 				</Typography>
 			)}

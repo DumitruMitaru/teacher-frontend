@@ -23,7 +23,15 @@ import useOnMount from '../hooks/useOnMount';
 const validationSchema = yup.object().shape({
 	file: yup
 		.mixed()
-		.test('required', 'Please select a file', value => !!value),
+		.test('required', 'Please select a file', value => !!value)
+		.test(
+			'format',
+			'Please only select video, image or audio files',
+			value =>
+				value &&
+				['video', 'audio', 'image'].includes(value.type.split('/')[0])
+		),
+
 	name: yup.string().max(50).required('Please enter a name'),
 	description: yup.string().max(1000),
 	Students: yup.array().of(yup.string()),
