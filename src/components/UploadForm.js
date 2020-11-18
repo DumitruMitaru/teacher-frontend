@@ -20,39 +20,46 @@ import PrimaryButton from './PrimaryButton';
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 
-const validationSchema = yup.object().shape({
-	file: yup
-		.mixed()
-		.test('required', 'Please select a file', value => !!value)
-		.test(
-			'format',
-			'Please only select video, image or audio files',
-			value =>
-				value &&
-				['video', 'audio', 'image'].includes(value.type.split('/')[0])
-		),
-
-	name: yup.string().max(50).required('Please enter a name'),
-	description: yup.string().max(1000),
-	Students: yup.array().of(yup.string()),
-});
-
-const UploadForm = ({ open, onClose, title, initialValues = {}, onSubmit }) => {
+const UploadForm = ({
+	open,
+	onClose,
+	title,
+	initialValues = {},
+	onSubmit,
+	fileUploadDisabled,
+}) => {
 	const { getStudents } = useApi();
 	const { loading, data: students } = useOnMount(getStudents);
+	const validationSchema = yup.object().shape({
+		file: yup
+			.mixed()
+			.test('required', 'Please select a file', value =>
+				fileUploadDisabled ? true : !!value
+			)
+			.test(
+				'format',
+				'Please only select video, image or audio files',
+				value =>
+					fileUploadDisabled
+						? true
+						: value &&
+						  ['video', 'audio', 'image'].includes(
+								value.type.split('/')[0]
+						  )
+			),
+		name: yup.string().max(50).required('Please enter a name'),
+		description: yup.string().max(1000),
+		Students: yup.array().of(yup.string()),
+	});
 
 	return (
 		<Dialog open={open} onClose={onClose} loading={loading}>
 			<Formik
 				initialValues={{
-					...initialValues,
 					file: '',
 					name: initialValues.name ?? '',
 					description: initialValues.description ?? '',
-					studentIds:
-						initialValues.Students?.map(
-							student => student.id ?? student
-						) ?? [],
+					...initialValues,
 				}}
 				validationSchema={validationSchema}
 				onSubmit={async (
@@ -77,9 +84,11 @@ const UploadForm = ({ open, onClose, title, initialValues = {}, onSubmit }) => {
 					<Form>
 						<DialogTitle>{title}</DialogTitle>
 						<DialogContent>
-							<GridContainer>
-								<LinkedFileUploadInput name="file" />
-							</GridContainer>
+							{!fileUploadDisabled && (
+								<GridContainer>
+									<LinkedFileUploadInput name="file" />
+								</GridContainer>
+							)}
 							<GridContainer>
 								<LinkedTextInput name="name" />
 								<LinkedTextInput name="description" />

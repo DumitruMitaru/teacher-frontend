@@ -2,15 +2,16 @@ import React from 'react';
 import { parseISO, format } from 'date-fns';
 import { Box, Card, CardContent } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { Add, Visibility } from '@material-ui/icons';
+import { Add, Create, Visibility, DeleteForever } from '@material-ui/icons';
 
 import { useDialogContext } from './GlobalDialog';
-import UploadForm from './UploadForm';
-import UploadPreview from './UploadPreview';
+import DeleteDialog from './DeleteDialog';
 import PrimaryButton from './PrimaryButton';
 import Table from './Table';
+import UploadForm from './UploadForm';
+import UploadPreview from './UploadPreview';
 
-const UploadTable = ({ uploads, onCreate }) => {
+const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 	const { showDialog } = useDialogContext();
 
 	return (
@@ -22,16 +23,16 @@ const UploadTable = ({ uploads, onCreate }) => {
 						display="block"
 						onClick={() =>
 							showDialog(UploadForm, {
-								title: 'Upload New Video or Audio',
+								title: 'Upload New Video, Audio or Image',
 								onSubmit: onCreate,
 							})
 						}
 					>
-						Upload Video/Audio
+						Upload File
 					</PrimaryButton>
 				</Box>
 				{uploads.length === 0 ? (
-					<Alert severity="info">No uploads</Alert>
+					<Alert severity="info">No files have been uploaded</Alert>
 				) : (
 					<Table
 						columns={[
@@ -67,7 +68,29 @@ const UploadTable = ({ uploads, onCreate }) => {
 								tooltip: 'View',
 								onClick: (e, upload) => {
 									showDialog(UploadPreview, {
-										upload,
+										title: 'Edit ' + upload.name,
+										initialValues: upload,
+									});
+								},
+							},
+							{
+								icon: () => <Create />,
+								tooltip: 'Edit',
+								onClick: (e, upload) => {
+									showDialog(UploadForm, {
+										initialValues: upload,
+										fileUploadDisabled: true,
+										onSubmit: formData =>
+											onEdit(upload.id, formData),
+									});
+								},
+							},
+							{
+								icon: () => <DeleteForever color="error" />,
+								tooltip: 'Delete',
+								onClick: (e, upload) => {
+									showDialog(DeleteDialog, {
+										onDelete: () => onDelete(upload.id),
 									});
 								},
 							},
