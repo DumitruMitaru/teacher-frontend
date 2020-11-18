@@ -9,7 +9,7 @@ const useApi = () => {
 	const getUrl = endpoint =>
 		`${process.env.REACT_APP_API_PROTOCOL}://${process.env.REACT_APP_API_DOMAIN}/${endpoint}`;
 
-	const makeRequest = async (method, endpoint, body) => {
+	const makeRequest = async (method, endpoint, body, { headers } = {}) => {
 		const token = await getAccessTokenSilently().catch(err => {
 			console.error(err);
 		});
@@ -36,6 +36,7 @@ const useApi = () => {
 		if (loadingMessage) {
 			loadingNotificationKey = enqueueSnackbar(loadingMessage, {
 				variant: 'info',
+				persist: true,
 			});
 		}
 
@@ -43,7 +44,7 @@ const useApi = () => {
 			method,
 			url: getUrl(endpoint),
 			data: body,
-			headers: { Authorization: `Bearer ${token}` },
+			headers: { Authorization: `Bearer ${token}`, ...headers },
 		})
 			.then(response => {
 				closeSnackbar(loadingNotificationKey);
@@ -68,6 +69,7 @@ const useApi = () => {
 		createEvent: event => makeRequest('post', 'event', event),
 		createPracticeNote: note => makeRequest('post', `practice-note`, note),
 		createStudent: student => makeRequest('post', 'student', student),
+		createUpload: upload => makeRequest('post', 'upload', upload, { headers: { 'Content-Type': 'multipart/form-data' } }),
 		deleteAnnouncement: id => makeRequest('delete', `announcement/${id}`),
 		deleteEvent: id => makeRequest('delete', `event/${id}`),
 		deleteStudent: id => makeRequest('delete', `student/${id}`),
@@ -79,6 +81,7 @@ const useApi = () => {
 		getEvents: () => makeRequest('get', 'event'),
 		getStudent: publicProfileId => makeRequest('get', `student/${publicProfileId}`),
 		getStudents: () => makeRequest('get', 'student'),
+		getUploads: () => makeRequest('get', 'upload'),
 		getUser: () => makeRequest('get', 'user'),
 		sendAnnouncement: (id, students) => makeRequest('post', `announcement/${id}/send`, students),
 	};

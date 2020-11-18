@@ -16,6 +16,7 @@ import StudentProfile from './pages/StudentProfile';
 import Students from './pages/Students';
 import VerifyEmail from './pages/VerifyEmail';
 import Announcements from './pages/Announcements';
+import Uploads from './pages/Uploads';
 
 import theme from './theme';
 
@@ -73,6 +74,9 @@ function App() {
 								</Route>
 								<Route path="/announcements" exact>
 									<Protected component={Announcements} />
+								</Route>
+								<Route path="/uploads" exact>
+									<Protected component={Uploads} />
 								</Route>
 								<Route
 									component={StudentProfile}

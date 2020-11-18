@@ -13,7 +13,13 @@ import {
 	IconButton,
 	Toolbar,
 } from '@material-ui/core';
-import { Announcement, EventNote, Menu, People } from '@material-ui/icons';
+import {
+	Announcement,
+	CloudUpload,
+	EventNote,
+	Menu,
+	People,
+} from '@material-ui/icons';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useHistory } from 'react-router-dom';
 
@@ -75,6 +81,7 @@ const AppBar = props => {
 						['/students', 'Students', People],
 						['/calendar', 'Calendar', EventNote],
 						['/announcements', 'Announcements', Announcement],
+						['/uploads', 'Uploads', CloudUpload],
 					].map(([pathname, title, Icon]) => (
 						<ListItem
 							key={pathname}
