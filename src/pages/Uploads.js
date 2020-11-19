@@ -11,7 +11,7 @@ const Upload = () => {
 	const {
 		createUpload,
 		getUploads,
-		getUser,
+		getStudents,
 		editUpload,
 		deleteUpload,
 	} = useApi();
@@ -25,6 +25,7 @@ const Upload = () => {
 				<CardContent>
 					<UploadTable
 						uploads={uploads}
+						getStudents={getStudents}
 						onCreate={upload =>
 							createUpload(upload).then(upload =>
 								setUploads(uploads => [upload, ...uploads])

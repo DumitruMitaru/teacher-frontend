@@ -84,7 +84,11 @@ const useApi = () => {
 		getStudents: () => makeRequest('get', 'student'),
 		getUploads: () => makeRequest('get', 'upload'),
 		getUser: () => makeRequest('get', 'user'),
-		publicGetStudent: publicProfileId => makeRequest('get', `public/student/${publicProfileId}`),
+		publicCreateUpload: (publicProfileId, upload) => makeRequest('post', `public/upload/${publicProfileId}`, upload, { header: { 'Content-Type': 'multipart/form-data' } }),
+		publicDeleteUpload: (publicProfileId, id) => makeRequest('delete', `public/${publicProfileId}/upload/${id}`),
+		publicEditUpload: (publicProfileId, id, upload) => makeRequest('put', `public/${publicProfileId}/upload/${id}`, upload, { header: { 'Content-Type': 'multipart/form-data' } }),
+		publicGetStudentProfile: publicProfileId => makeRequest('get', `public/student/${publicProfileId}/profile`),
+		publicGetStudents: publicProfileId => makeRequest('get', `public/student/${publicProfileId}`),
 		sendAnnouncement: (id, students) => makeRequest('post', `announcement/${id}/send`, students),
 	};
 };

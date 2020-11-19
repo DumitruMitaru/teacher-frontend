@@ -1,13 +1,10 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { Formik, Form } from 'formik';
 import {
-	Input,
 	Button,
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	Typography,
 } from '@material-ui/core';
 import * as yup from 'yup';
 
@@ -18,7 +15,6 @@ import Dialog from './Dialog';
 import GridContainer from './GridContainer';
 import PrimaryButton from './PrimaryButton';
 
-import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
 
 const UploadForm = ({
@@ -28,8 +24,8 @@ const UploadForm = ({
 	initialValues = {},
 	onSubmit,
 	fileUploadDisabled,
+	getStudents,
 }) => {
-	const { getStudents } = useApi();
 	const { loading, data: students } = useOnMount(getStudents);
 	const validationSchema = yup.object().shape({
 		file: yup
@@ -50,7 +46,7 @@ const UploadForm = ({
 			),
 		name: yup.string().max(50).required('Please enter a name'),
 		description: yup.string().max(1000),
-		studentIds: yup.array().of(yup.string()),
+		taggedStudentIds: yup.array().of(yup.string()),
 	});
 
 	return (
@@ -60,15 +56,15 @@ const UploadForm = ({
 					file: '',
 					name: initialValues.name ?? '',
 					description: initialValues.description ?? '',
-					studentIds:
-						initialValues.Students?.map(
+					taggedStudentIds:
+						initialValues.taggedStudents?.map(
 							student => student.id ?? student
 						) ?? [],
 					...initialValues,
 				}}
 				validationSchema={validationSchema}
 				onSubmit={async (
-					{ file, name, description, studentIds },
+					{ file, name, description, taggedStudentIds },
 					{ setSubmitting }
 				) => {
 					try {
@@ -77,9 +73,9 @@ const UploadForm = ({
 						formData.append('name', name);
 						formData.append('description', description);
 						formData.append(
-							'Students',
+							'taggedStudents',
 							JSON.stringify(
-								studentIds.map(id =>
+								taggedStudentIds.map(id =>
 									students.find(student => id === student.id)
 								)
 							)
@@ -108,7 +104,7 @@ const UploadForm = ({
 							</GridContainer>
 							<GridContainer>
 								<LinkedMultiSelect
-									name="studentIds"
+									name="taggedStudentIds"
 									label="Tagged Students"
 									options={students.map(
 										({ id, firstName, lastName }) => ({

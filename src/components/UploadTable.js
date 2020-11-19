@@ -11,26 +11,36 @@ import Table from './Table';
 import UploadForm from './UploadForm';
 import UploadPreview from './UploadPreview';
 
-const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
+const UploadTable = ({
+	uploads,
+	onCreate,
+	onEdit,
+	onDelete,
+	getStudents,
+	disabled,
+}) => {
 	const { showDialog } = useDialogContext();
 
 	return (
 		<Card>
 			<CardContent>
-				<Box m={1}>
-					<PrimaryButton
-						startIcon={<Add />}
-						display="block"
-						onClick={() =>
-							showDialog(UploadForm, {
-								title: 'Upload New Video, Audio or Image',
-								onSubmit: onCreate,
-							})
-						}
-					>
-						Upload File
-					</PrimaryButton>
-				</Box>
+				{!disabled && (
+					<Box m={1}>
+						<PrimaryButton
+							startIcon={<Add />}
+							display="block"
+							onClick={() =>
+								showDialog(UploadForm, {
+									title: 'Upload New Video, Audio or Image',
+									getStudents,
+									onSubmit: onCreate,
+								})
+							}
+						>
+							Upload File
+						</PrimaryButton>
+					</Box>
+				)}
 				{uploads.length === 0 ? (
 					<Alert severity="info">No files have been uploaded</Alert>
 				) : (
@@ -50,7 +60,7 @@ const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 							},
 							{
 								title: 'Tagged Students',
-								field: 'taggedStudents',
+								field: 'taggedStudentNames',
 							},
 							{
 								title: 'Uploaded By',
@@ -81,6 +91,7 @@ const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 								tooltip: 'Edit',
 								onClick: (e, upload) => {
 									showDialog(UploadForm, {
+										getStudents,
 										title: 'Edit ' + upload.name,
 										initialValues: upload,
 										fileUploadDisabled: true,
@@ -103,9 +114,9 @@ const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 							upload.uploadedBy = upload.StudentId
 								? upload.Student.firstName
 								: upload.User.email;
-							upload.taggedStudents = upload.Students.map(
-								({ firstName }) => firstName
-							).join(', ');
+							upload.taggedStudentNames = upload.taggedStudents
+								.map(({ firstName }) => firstName)
+								.join(', ');
 							return upload;
 						})}
 					/>

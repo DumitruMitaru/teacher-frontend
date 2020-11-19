@@ -5,18 +5,27 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Alert } from '@material-ui/lab';
 
 import Calendar from '../components/Calendar';
+import GridContainer from '../components/GridContainer';
+import Note from '../components/Note';
 import Page from '../components/Page';
 import PracticeBook from '../components/PracticeBook';
-import Note from '../components/Note';
+import UploadTable from '../components/UploadTable';
 
 import useApi from '../hooks/useApi';
 import useOnMount from '../hooks/useOnMount';
-import GridContainer from '../components/GridContainer';
 
 const StudentProfile = () => {
 	const { publicProfileId } = useParams();
 	const { isAuthenticated } = useAuth0();
-	const { editPracticeNote, publicGetStudent, createPracticeNote } = useApi();
+	const {
+		editPracticeNote,
+		publicGetStudentProfile,
+		publicGetStudents,
+		createPracticeNote,
+		publicCreateUpload,
+		publicEditUpload,
+		publicDeleteUpload,
+	} = useApi();
 	const {
 		loading,
 		data: {
@@ -26,9 +35,17 @@ const StudentProfile = () => {
 			id,
 			lastName,
 			PracticeNotes,
+			Uploads = [],
 		} = {},
 		setData,
-	} = useOnMount(() => publicGetStudent(publicProfileId));
+	} = useOnMount(() => publicGetStudentProfile(publicProfileId));
+
+	const setUploads = setter =>
+		setData(data => ({
+			...data,
+			Uploads: setter(data.Uploads),
+		}));
+
 	const theme = useTheme();
 	const upMd = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -97,6 +114,46 @@ const StudentProfile = () => {
 						</GridContainer>
 					)}
 				</div>
+			</GridContainer>
+			<Typography variant="h5" gutterBottom>
+				Uploads
+			</Typography>
+			<GridContainer>
+				<UploadTable
+					uploads={Uploads}
+					disabled={isAuthenticated}
+					getStudents={() => publicGetStudents(publicProfileId)}
+					onCreate={upload =>
+						publicCreateUpload(
+							publicProfileId,
+							upload
+						).then(upload =>
+							setUploads(uploads => [upload, ...uploads])
+						)
+					}
+					onEdit={(id, formData) =>
+						publicEditUpload(
+							publicProfileId,
+							id,
+							formData
+						).then(editedUpload =>
+							setUploads(uploads =>
+								uploads.map(upload =>
+									upload.id === id
+										? { ...upload, ...editedUpload }
+										: upload
+								)
+							)
+						)
+					}
+					onDelete={id =>
+						publicDeleteUpload(publicProfileId, id).then(() =>
+							setUploads(uploads =>
+								uploads.filter(upload => upload.id !== id)
+							)
+						)
+					}
+				/>
 			</GridContainer>
 			<GridContainer>
 				<Box marginTop={4}>
