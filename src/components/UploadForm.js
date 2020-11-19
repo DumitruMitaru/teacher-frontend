@@ -13,6 +13,7 @@ import * as yup from 'yup';
 
 import { LinkedTextInput } from './TextInput';
 import { LinkedFileUploadInput } from './FileUploadInput';
+import { LinkedMultiSelect } from './MultiSelect';
 import Dialog from './Dialog';
 import GridContainer from './GridContainer';
 import PrimaryButton from './PrimaryButton';
@@ -49,7 +50,7 @@ const UploadForm = ({
 			),
 		name: yup.string().max(50).required('Please enter a name'),
 		description: yup.string().max(1000),
-		Students: yup.array().of(yup.string()),
+		studentIds: yup.array().of(yup.string()),
 	});
 
 	return (
@@ -59,11 +60,15 @@ const UploadForm = ({
 					file: '',
 					name: initialValues.name ?? '',
 					description: initialValues.description ?? '',
+					studentIds:
+						initialValues.Students?.map(
+							student => student.id ?? student
+						) ?? [],
 					...initialValues,
 				}}
 				validationSchema={validationSchema}
 				onSubmit={async (
-					{ file, name, description },
+					{ file, name, description, studentIds },
 					{ setSubmitting }
 				) => {
 					try {
@@ -71,6 +76,14 @@ const UploadForm = ({
 						formData.append('file', file);
 						formData.append('name', name);
 						formData.append('description', description);
+						formData.append(
+							'Students',
+							JSON.stringify(
+								studentIds.map(id =>
+									students.find(student => id === student.id)
+								)
+							)
+						);
 
 						await onSubmit(formData);
 						onClose();
@@ -92,6 +105,18 @@ const UploadForm = ({
 							<GridContainer>
 								<LinkedTextInput name="name" />
 								<LinkedTextInput name="description" />
+							</GridContainer>
+							<GridContainer>
+								<LinkedMultiSelect
+									name="studentIds"
+									label="Tagged Students"
+									options={students.map(
+										({ id, firstName, lastName }) => ({
+											label: firstName + ' ' + lastName,
+											value: id,
+										})
+									)}
+								/>
 							</GridContainer>
 						</DialogContent>
 						<DialogActions>

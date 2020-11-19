@@ -49,6 +49,10 @@ const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 								field: 'description',
 							},
 							{
+								title: 'Tagged Students',
+								field: 'taggedStudents',
+							},
+							{
 								title: 'Uploaded By',
 								field: 'uploadedBy',
 							},
@@ -68,8 +72,7 @@ const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 								tooltip: 'View',
 								onClick: (e, upload) => {
 									showDialog(UploadPreview, {
-										title: 'Edit ' + upload.name,
-										initialValues: upload,
+										upload,
 									});
 								},
 							},
@@ -78,6 +81,7 @@ const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 								tooltip: 'Edit',
 								onClick: (e, upload) => {
 									showDialog(UploadForm, {
+										title: 'Edit ' + upload.name,
 										initialValues: upload,
 										fileUploadDisabled: true,
 										onSubmit: formData =>
@@ -99,6 +103,9 @@ const UploadTable = ({ uploads, onCreate, onEdit, onDelete }) => {
 							upload.uploadedBy = upload.StudentId
 								? upload.Student.firstName
 								: upload.User.email;
+							upload.taggedStudents = upload.Students.map(
+								({ firstName }) => firstName
+							).join(', ');
 							return upload;
 						})}
 					/>

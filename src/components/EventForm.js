@@ -25,7 +25,7 @@ const validationSchema = yup.object().shape({
 	title: yup.string().max(100),
 	startDate: yup.date().required('Please select a begin date'),
 	endDate: yup.date().required('Please select an end date'),
-	Students: yup.array().of(yup.string()),
+	studentIds: yup.array().of(yup.string()),
 });
 
 const EventForm = ({
@@ -44,12 +44,12 @@ const EventForm = ({
 		<Dialog open={open} onClose={onClose} loading={loading}>
 			<Formik
 				initialValues={{
-					...initialValues,
-					title: initialValues.title ?? '',
+					title: '',
 					studentIds:
 						initialValues.Students?.map(
 							student => student.id ?? student
 						) ?? [],
+					...initialValues,
 				}}
 				validationSchema={validationSchema}
 				onSubmit={async (
@@ -98,7 +98,7 @@ const EventForm = ({
 							<GridContainer>
 								<LinkedMultiSelect
 									name="studentIds"
-									label="Students"
+									label="Tagged Students"
 									options={students.map(
 										({ id, firstName, lastName }) => ({
 											label: firstName + ' ' + lastName,
