@@ -100,6 +100,15 @@ const Announcement = () => {
 							]}
 							actions={[
 								{
+									icon: () => <Send />,
+									tooltip: 'Send as text message',
+									onClick: (e, announcement) => {
+										showDialog(SendAnnouncementDialog, {
+											announcement,
+										});
+									},
+								},
+								{
 									icon: () => <Create />,
 									tooltip: 'Edit',
 									onClick: (e, announcement) => {
@@ -153,15 +162,6 @@ const Announcement = () => {
 														]
 													)
 												),
-										});
-									},
-								},
-								{
-									icon: () => <Send />,
-									tooltip: 'Send text message',
-									onClick: (e, announcement) => {
-										showDialog(SendAnnouncementDialog, {
-											announcement,
 										});
 									},
 								},

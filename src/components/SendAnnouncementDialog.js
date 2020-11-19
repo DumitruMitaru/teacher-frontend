@@ -44,7 +44,9 @@ const SendAnnouncementDialog = ({ announcement, onClose, onSubmit, open }) => {
 			>
 				{({ isSubmitting }) => (
 					<Form>
-						<DialogTitle>Send Announcement</DialogTitle>
+						<DialogTitle>
+							Send Announcement As Text Message
+						</DialogTitle>
 						<DialogContent>
 							<Typography style={{ marginBottom: 32 }}>
 								{announcement.text}

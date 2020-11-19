@@ -16,7 +16,7 @@ import GridContainer from '../components/GridContainer';
 const StudentProfile = () => {
 	const { publicProfileId } = useParams();
 	const { isAuthenticated } = useAuth0();
-	const { editPracticeNote, getStudent, createPracticeNote } = useApi();
+	const { editPracticeNote, publicGetStudent, createPracticeNote } = useApi();
 	const {
 		loading,
 		data: {
@@ -28,7 +28,7 @@ const StudentProfile = () => {
 			PracticeNotes,
 		} = {},
 		setData,
-	} = useOnMount(() => getStudent(publicProfileId));
+	} = useOnMount(() => publicGetStudent(publicProfileId));
 	const theme = useTheme();
 	const upMd = useMediaQuery(theme.breakpoints.up('md'));
 
