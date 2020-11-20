@@ -17,30 +17,28 @@ const UploadTable = ({
 	onEdit,
 	onDelete,
 	getStudents,
-	disabled,
+	canEdit = () => true,
 }) => {
 	const { showDialog } = useDialogContext();
 
 	return (
 		<Card>
 			<CardContent>
-				{!disabled && (
-					<Box m={1}>
-						<PrimaryButton
-							startIcon={<Add />}
-							display="block"
-							onClick={() =>
-								showDialog(UploadForm, {
-									title: 'Upload New Video, Audio or Image',
-									getStudents,
-									onSubmit: onCreate,
-								})
-							}
-						>
-							Upload File
-						</PrimaryButton>
-					</Box>
-				)}
+				<Box m={1}>
+					<PrimaryButton
+						startIcon={<Add />}
+						display="block"
+						onClick={() =>
+							showDialog(UploadForm, {
+								title: 'Upload New Video, Audio or Image',
+								getStudents,
+								onSubmit: onCreate,
+							})
+						}
+					>
+						Upload File
+					</PrimaryButton>
+				</Box>
 				{uploads.length === 0 ? (
 					<Alert severity="info">No files have been uploaded</Alert>
 				) : (
@@ -86,9 +84,10 @@ const UploadTable = ({
 									});
 								},
 							},
-							{
+							upload => ({
 								icon: () => <Create />,
 								tooltip: 'Edit',
+								disabled: !canEdit(upload),
 								onClick: (e, upload) => {
 									showDialog(UploadForm, {
 										getStudents,
@@ -99,21 +98,23 @@ const UploadTable = ({
 											onEdit(upload.id, formData),
 									});
 								},
-							},
-							{
-								icon: () => <DeleteForever color="error" />,
+							}),
+							upload => ({
+								icon: () => <DeleteForever />,
 								tooltip: 'Delete',
+								disabled: !canEdit(upload),
 								onClick: (e, upload) => {
 									showDialog(DeleteDialog, {
 										onDelete: () => onDelete(upload.id),
 									});
 								},
-							},
+							}),
 						]}
 						data={uploads.map(upload => {
 							upload.uploadedBy = upload.StudentId
 								? upload.Student.firstName
 								: upload.User.email;
+							upload.ownerId = upload.StudentId || upload.User.id;
 							upload.taggedStudentNames = upload.taggedStudents
 								.map(({ firstName }) => firstName)
 								.join(', ');

@@ -139,7 +139,7 @@ const Announcement = () => {
 									},
 								},
 								{
-									icon: () => <DeleteForever color="error" />,
+									icon: () => <DeleteForever />,
 									tooltip: 'Delete',
 									onClick: (e, announcement) => {
 										showDialog(DeleteDialog, {

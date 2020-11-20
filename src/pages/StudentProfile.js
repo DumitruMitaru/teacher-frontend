@@ -121,8 +121,8 @@ const StudentProfile = () => {
 			<GridContainer>
 				<UploadTable
 					uploads={Uploads}
-					disabled={isAuthenticated}
 					getStudents={() => publicGetStudents(publicProfileId)}
+					canEdit={upload => upload.StudentId === id}
 					onCreate={upload =>
 						publicCreateUpload(
 							publicProfileId,

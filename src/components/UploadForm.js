@@ -6,6 +6,7 @@ import {
 	DialogContent,
 	DialogTitle,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import * as yup from 'yup';
 
 import { LinkedTextInput } from './TextInput';
@@ -93,6 +94,13 @@ const UploadForm = ({
 					<Form>
 						<DialogTitle>{title}</DialogTitle>
 						<DialogContent>
+							{!fileUploadDisabled && (
+								<Alert severity="info">
+									Large files may take a few minutes to
+									upload. Please do not exit the application
+									before the file has finished uploading.
+								</Alert>
+							)}
 							{!fileUploadDisabled && (
 								<GridContainer>
 									<LinkedFileUploadInput name="file" />
