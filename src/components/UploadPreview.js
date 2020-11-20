@@ -3,7 +3,7 @@ import { Button, DialogActions, DialogContent } from '@material-ui/core';
 
 import Dialog from './Dialog';
 
-const UploadPreview = ({ upload: { url, type }, open, onClose }) => {
+const UploadPreview = ({ upload: { url, type, subType }, open, onClose }) => {
 	return (
 		<Dialog open={open} onClose={onClose}>
 			<DialogContent>
@@ -12,12 +12,12 @@ const UploadPreview = ({ upload: { url, type }, open, onClose }) => {
 				)}
 				{type === 'video' && (
 					<video width="100%" height="auto" controls>
-						<source src={url} />
+						<source src={url} type={type + '/' + subType} />
 					</video>
 				)}
 				{type === 'audio' && (
 					<audio controls>
-						<source src={url} />
+						<source src={url} type={type + '/' + subType} />
 					</audio>
 				)}
 			</DialogContent>
