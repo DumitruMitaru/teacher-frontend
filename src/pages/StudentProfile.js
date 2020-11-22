@@ -20,11 +20,12 @@ const StudentProfile = () => {
 	const {
 		editPracticeNote,
 		publicGetStudentProfile,
-		publicGetStudents,
 		createPracticeNote,
 		publicCreateUpload,
-		publicEditUpload,
 		publicDeleteUpload,
+		publicEditUpload,
+		publicGetSignedUrl,
+		publicGetStudents,
 	} = useApi();
 	const {
 		loading,
@@ -122,6 +123,9 @@ const StudentProfile = () => {
 				<UploadTable
 					uploads={Uploads}
 					getStudents={() => publicGetStudents(publicProfileId)}
+					getSignedUrl={fileType =>
+						publicGetSignedUrl(publicProfileId, fileType)
+					}
 					canEdit={upload => upload.StudentId === id}
 					onCreate={upload =>
 						publicCreateUpload(
@@ -131,11 +135,11 @@ const StudentProfile = () => {
 							setUploads(uploads => [upload, ...uploads])
 						)
 					}
-					onEdit={(id, formData) =>
+					onEdit={(id, upload) =>
 						publicEditUpload(
 							publicProfileId,
 							id,
-							formData
+							upload
 						).then(editedUpload =>
 							setUploads(uploads =>
 								uploads.map(upload =>

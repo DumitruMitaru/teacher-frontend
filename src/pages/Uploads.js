@@ -14,6 +14,7 @@ const Upload = () => {
 		getStudents,
 		editUpload,
 		deleteUpload,
+		getSignedUrl,
 	} = useApi();
 	const { loading, data: uploads = [], setData: setUploads } = useOnMount(
 		getUploads
@@ -26,6 +27,7 @@ const Upload = () => {
 					<UploadTable
 						uploads={uploads}
 						getStudents={getStudents}
+						getSignedUrl={getSignedUrl}
 						onCreate={upload =>
 							createUpload(upload).then(upload =>
 								setUploads(uploads => [upload, ...uploads])

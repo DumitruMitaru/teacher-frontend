@@ -17,6 +17,7 @@ const UploadTable = ({
 	onEdit,
 	onDelete,
 	getStudents,
+	getSignedUrl,
 	canEdit = () => true,
 }) => {
 	const { showDialog } = useDialogContext();
@@ -32,6 +33,7 @@ const UploadTable = ({
 							showDialog(UploadForm, {
 								title: 'Upload New Video, Audio or Image',
 								getStudents,
+								getSignedUrl,
 								onSubmit: onCreate,
 							})
 						}

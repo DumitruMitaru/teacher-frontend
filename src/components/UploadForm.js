@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import {
 	Button,
@@ -8,6 +8,8 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import * as yup from 'yup';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 import { LinkedTextInput } from './TextInput';
 import { LinkedFileUploadInput } from './FileUploadInput';
@@ -15,6 +17,7 @@ import { LinkedMultiSelect } from './MultiSelect';
 import Dialog from './Dialog';
 import GridContainer from './GridContainer';
 import PrimaryButton from './PrimaryButton';
+import CircularProgress from './CircularProgress';
 
 import useOnMount from '../hooks/useOnMount';
 
@@ -26,7 +29,10 @@ const UploadForm = ({
 	onSubmit,
 	fileUploadDisabled,
 	getStudents,
+	getSignedUrl,
 }) => {
+	const [uploadProgress, setUploadProgress] = useState(0);
+	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const { loading, data: students } = useOnMount(getStudents);
 	const validationSchema = yup.object().shape({
 		file: yup
@@ -69,20 +75,43 @@ const UploadForm = ({
 					{ setSubmitting }
 				) => {
 					try {
-						const formData = new FormData();
-						formData.append('file', file);
-						formData.append('name', name);
-						formData.append('description', description);
-						formData.append(
-							'taggedStudents',
-							JSON.stringify(
-								taggedStudentIds.map(id =>
-									students.find(student => id === student.id)
-								)
-							)
-						);
+						let uploadUrl, type, subType;
 
-						await onSubmit(formData);
+						if (!fileUploadDisabled) {
+							const response = await getSignedUrl(file.type);
+							uploadUrl = response.uploadUrl;
+
+							const uploadingNotificationKey = enqueueSnackbar(
+								'Uploading...',
+								{
+									variant: 'info',
+									persist: true,
+								}
+							);
+							await axios.put(response.signedUrl, file, {
+								onUploadProgress: progressEvent =>
+									setUploadProgress(
+										Math.round(
+											(progressEvent.loaded * 100) /
+												progressEvent.total
+										)
+									),
+							});
+							closeSnackbar(uploadingNotificationKey);
+							[type, subType] = file.type.split('/');
+						}
+
+						await onSubmit({
+							type,
+							subType,
+							url: uploadUrl,
+							name,
+							description,
+							taggedStudents: taggedStudentIds.map(id =>
+								students.find(student => id === student.id)
+							),
+						});
+
 						onClose();
 					} catch (err) {
 					} finally {
@@ -101,11 +130,20 @@ const UploadForm = ({
 									before the file has finished uploading.
 								</Alert>
 							)}
-							{!fileUploadDisabled && (
-								<GridContainer>
-									<LinkedFileUploadInput name="file" />
-								</GridContainer>
-							)}
+							{!fileUploadDisabled &&
+								(isSubmitting ? (
+									<center style={{ margin: 8 }}>
+										<CircularProgress
+											variant="static"
+											size={50}
+											value={uploadProgress}
+										/>
+									</center>
+								) : (
+									<GridContainer>
+										<LinkedFileUploadInput name="file" />
+									</GridContainer>
+								))}
 							<GridContainer>
 								<LinkedTextInput name="name" />
 								<LinkedTextInput name="description" />
@@ -131,6 +169,7 @@ const UploadForm = ({
 								Save
 							</PrimaryButton>
 							<Button
+								disabled={isSubmitting}
 								onClick={e => {
 									e.stopPropagation();
 									onClose();
