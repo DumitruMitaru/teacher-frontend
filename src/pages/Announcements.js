@@ -87,6 +87,11 @@ const Announcement = () => {
 								{
 									title: 'announcement',
 									field: 'text',
+									render: ({ text }) => (
+										<div style={{ whiteSpace: 'pre-line' }}>
+											{text}
+										</div>
+									),
 								},
 								{
 									title: 'Date Posted',

@@ -50,7 +50,12 @@ const AnnouncementForm = ({
 						<DialogTitle>{title}</DialogTitle>
 						<DialogContent>
 							<GridContainer>
-								<LinkedTextInput name="text" />
+								<LinkedTextInput
+									name="text"
+									multiline
+									rows={10}
+									variant="outlined"
+								/>
 							</GridContainer>
 						</DialogContent>
 						<DialogActions>

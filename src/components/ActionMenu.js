@@ -81,7 +81,7 @@ const ActionMenu = ({
 					},
 					{
 						icon: <AccountBox />,
-						label: 'View Student Profile URL',
+						label: 'View Student Profile Page',
 						onClick: () =>
 							history.push(`/students/${publicProfileId}`),
 					},

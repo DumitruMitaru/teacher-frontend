@@ -9,26 +9,31 @@ const useApi = () => {
 	const getUrl = endpoint =>
 		`${process.env.REACT_APP_API_PROTOCOL}://${process.env.REACT_APP_API_DOMAIN}/${endpoint}`;
 
-	const makeRequest = async (method, endpoint, body, { headers } = {}) => {
+	const makeRequest = async (
+		method,
+		endpoint,
+		body,
+		{ loadingMessage, successMessage } = {}
+	) => {
 		const token = await getAccessTokenSilently().catch(err => {
 			console.error(err);
 		});
 
-		let loadingMessage;
-		let successMessage;
-		switch (method) {
-			case 'put':
-			case 'post':
-				loadingMessage = 'Saving...';
-				successMessage = 'Saved';
-				break;
+		if (!loadingMessage || !successMessage) {
+			switch (method) {
+				case 'put':
+				case 'post':
+					loadingMessage = 'Saving...';
+					successMessage = 'Saved';
+					break;
 
-			case 'delete':
-				loadingMessage = 'Deleting...';
-				successMessage = 'Deleted';
-				break;
-			default:
-				break;
+				case 'delete':
+					loadingMessage = 'Deleting...';
+					successMessage = 'Deleted';
+					break;
+				default:
+					break;
+			}
 		}
 
 		let loadingNotificationKey;
@@ -44,7 +49,7 @@ const useApi = () => {
 			method,
 			url: getUrl(endpoint),
 			data: body,
-			headers: { Authorization: `Bearer ${token}`, ...headers },
+			headers: { Authorization: `Bearer ${token}` },
 		})
 			.then(response => {
 				closeSnackbar(loadingNotificationKey);
@@ -91,7 +96,7 @@ const useApi = () => {
 		publicGetStudentProfile: publicProfileId => makeRequest('get', `public/student/${publicProfileId}/profile`),
 		publicGetStudents: publicProfileId => makeRequest('get', `public/student/${publicProfileId}`),
 		publicGetSignedUrl: (publicProfileId, fileType) => makeRequest('get', `public/upload/signed-url/${publicProfileId}/?fileType=${fileType}`),
-		sendAnnouncement: (id, students) => makeRequest('post', `announcement/${id}/send`, students),
+		sendAnnouncement: (id, students) => makeRequest('post', `announcement/${id}/send`, students, { loadingMessage: 'Sending...', successMessage: 'Sent' }),
 	};
 };
 
