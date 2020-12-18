@@ -48,7 +48,12 @@ const SendAnnouncementDialog = ({ announcement, onClose, onSubmit, open }) => {
 							Send Announcement As Text Message
 						</DialogTitle>
 						<DialogContent>
-							<Typography style={{ marginBottom: 32 }}>
+							<Typography
+								style={{
+									marginBottom: 32,
+									whiteSpace: 'pre-line',
+								}}
+							>
 								{announcement.text}
 							</Typography>
 							<LinkedCheckboxGroup
