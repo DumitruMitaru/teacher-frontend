@@ -3,6 +3,7 @@ import {
 	Button,
 	DialogActions,
 	DialogContent,
+	Grid,
 	List,
 	ListItem,
 	ListItemText,
@@ -56,14 +57,33 @@ const UploadPreview = ({
 					subheader={<Typography variant="h6">Comments</Typography>}
 					style={{ marginBottom: 8 }}
 				>
-					{comments.map(({ id, text, createdAt }) => (
+					{comments.map(({ Student, User, id, text, createdAt }) => (
 						<ListItem key={id} divider>
 							<ListItemText
-								primary={text}
-								secondary={
-									'Date Posted: ' +
-									format(new Date(createdAt), 'M/d/Y')
+								primary={
+									<Grid
+										container
+										justify="space-between"
+										alignItems="center"
+									>
+										<Typography>
+											{Student
+												? Student.firstName
+												: User.email}
+										</Typography>
+										<Typography
+											variant="caption"
+											component="div"
+											align="right"
+										>
+											{format(
+												new Date(createdAt),
+												'M/d/Y'
+											)}
+										</Typography>
+									</Grid>
 								}
+								secondary={text}
 							/>
 						</ListItem>
 					))}
