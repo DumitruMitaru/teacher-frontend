@@ -17,6 +17,7 @@ const UploadTable = ({
 	getStudents,
 	getComments,
 	onCreateComment,
+	onEditComment,
 	onCreate,
 	onDelete,
 	onEdit,
@@ -87,6 +88,7 @@ const UploadTable = ({
 										upload,
 										getComments,
 										onCreateComment,
+										onEditComment,
 									});
 								},
 							},

@@ -10,9 +10,12 @@ import {
 	Typography,
 } from '@material-ui/core';
 import { format } from 'date-fns';
+import * as yup from 'yup';
 
-import Dialog from './Dialog';
 import CommentForm from './CommentForm';
+import Dialog from './Dialog';
+import EditableTextField from './EditableTextField';
+
 import useOnMount from '../hooks/useOnMount';
 
 const UploadPreview = ({
@@ -21,6 +24,7 @@ const UploadPreview = ({
 	onClose,
 	getComments,
 	onCreateComment,
+	onEditComment,
 }) => {
 	const {
 		loading,
@@ -58,7 +62,7 @@ const UploadPreview = ({
 					style={{ marginBottom: 8 }}
 				>
 					{comments.map(({ Student, User, id, text, createdAt }) => (
-						<ListItem key={id} divider>
+						<ListItem key={id}>
 							<ListItemText
 								primary={
 									<Grid
@@ -83,7 +87,33 @@ const UploadPreview = ({
 										</Typography>
 									</Grid>
 								}
-								secondary={text}
+								secondary={
+									<EditableTextField
+										value={text}
+										validationSchema={yup
+											.string()
+											.max(1000)
+											.required('Please enter a comment')}
+										onEdit={newText =>
+											onEditComment(id, {
+												text: newText,
+											}).then(() =>
+												setComments(comments =>
+													comments.map(comment =>
+														comment.id === id
+															? {
+																	...comment,
+																	text: newText,
+															  }
+															: comment
+													)
+												)
+											)
+										}
+										variant="outlined"
+										multiline
+									/>
+								}
 							/>
 						</ListItem>
 					))}

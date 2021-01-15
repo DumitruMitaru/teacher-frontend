@@ -23,6 +23,7 @@ const StudentProfile = () => {
 		publicCreateComment,
 		publicCreateUpload,
 		publicDeleteUpload,
+		publicEditComment,
 		publicEditUpload,
 		publicGetComments,
 		publicGetSignedUrl,
@@ -133,6 +134,9 @@ const StudentProfile = () => {
 					}
 					onCreateComment={comment =>
 						publicCreateComment(publicProfileId, comment)
+					}
+					onEditComment={(id, comment) =>
+						publicEditComment(publicProfileId, id, comment)
 					}
 					canEdit={upload => upload.StudentId === id}
 					onCreate={upload =>

@@ -10,10 +10,11 @@ import useOnMount from '../hooks/useOnMount';
 const Upload = () => {
 	const {
 		createComment,
-		getComments,
 		createUpload,
 		deleteUpload,
+		editComment,
 		editUpload,
+		getComments,
 		getSignedUrl,
 		getStudents,
 		getUploads,
@@ -32,6 +33,7 @@ const Upload = () => {
 						getStudents={getStudents}
 						getComments={getComments}
 						onCreateComment={createComment}
+						onEditComment={editComment}
 						getSignedUrl={getSignedUrl}
 						onCreate={upload =>
 							createUpload(upload).then(upload =>
