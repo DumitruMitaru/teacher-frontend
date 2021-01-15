@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import {
-	makeStyles,
-	Divider,
-	List,
-	ListItem,
-	ListItemText,
-	ListItemIcon,
 	AppBar as MUIAppBar,
 	Button,
+	Divider,
 	Drawer,
 	Grid,
 	IconButton,
+	List,
+	ListItem,
+	ListItemIcon,
+	ListItemText,
+	makeStyles,
 	Toolbar,
 } from '@material-ui/core';
 import {
 	Announcement,
 	CloudUpload,
+	ContactMail,
 	EventNote,
 	Menu,
 	People,
@@ -78,6 +79,7 @@ const AppBar = props => {
 				<Divider />
 				<List>
 					{[
+						['/account', 'Account', ContactMail],
 						['/students', 'Students', People],
 						['/calendar', 'Calendar', EventNote],
 						['/announcements', 'Announcements', Announcement],

@@ -85,6 +85,7 @@ const useApi = () => {
 		editPracticeNote: (id, practiceNote) => makeRequest('put', `practice-note/${id}`, practiceNote),
 		editStudent: (id, student) => makeRequest('put', `student/${id}`, student),
 		editUpload: (id, upload) => makeRequest('put', `upload/${id}`, upload),
+		editUser: (user) => makeRequest('put', `user`, user),
 		getAnnouncements: () => makeRequest('get', 'announcement'),
 		getComments: (uploadId) => makeRequest('get', `upload/${uploadId}/comments`),
 		getEvents: () => makeRequest('get', 'event'),

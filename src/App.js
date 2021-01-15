@@ -10,13 +10,15 @@ import {
 } from '@auth0/auth0-react';
 
 import { DialogContextProvider } from './components/GlobalDialog';
+
+import Account from './pages/Account';
+import Announcements from './pages/Announcements';
 import Calendar from './pages/Calendar';
 import LandingPage from './pages/LandingPage';
 import StudentProfile from './pages/StudentProfile';
 import Students from './pages/Students';
-import VerifyEmail from './pages/VerifyEmail';
-import Announcements from './pages/Announcements';
 import Uploads from './pages/Uploads';
+import VerifyEmail from './pages/VerifyEmail';
 
 import theme from './theme';
 
@@ -66,6 +68,9 @@ function App() {
 					<DialogContextProvider>
 						<Router history={history}>
 							<Switch>
+								<Route path="/account" exact>
+									<Protected component={Account} />
+								</Route>
 								<Route path="/students" exact>
 									<Protected component={Students} />
 								</Route>
