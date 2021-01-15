@@ -18,13 +18,15 @@ const StudentProfile = () => {
 	const { publicProfileId } = useParams();
 	const { isAuthenticated } = useAuth0();
 	const {
-		editPracticeNote,
-		publicGetStudentProfile,
 		createPracticeNote,
+		editPracticeNote,
+		publicCreateComment,
 		publicCreateUpload,
 		publicDeleteUpload,
 		publicEditUpload,
+		publicGetComments,
 		publicGetSignedUrl,
+		publicGetStudentProfile,
 		publicGetStudents,
 	} = useApi();
 	const {
@@ -125,6 +127,12 @@ const StudentProfile = () => {
 					getStudents={() => publicGetStudents(publicProfileId)}
 					getSignedUrl={fileType =>
 						publicGetSignedUrl(publicProfileId, fileType)
+					}
+					getComments={uploadId =>
+						publicGetComments(publicProfileId, uploadId)
+					}
+					onCreateComment={comment =>
+						publicCreateComment(publicProfileId, comment)
 					}
 					canEdit={upload => upload.StudentId === id}
 					onCreate={upload =>

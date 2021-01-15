@@ -12,13 +12,15 @@ import UploadForm from './UploadForm';
 import UploadPreview from './UploadPreview';
 
 const UploadTable = ({
-	uploads,
-	onCreate,
-	onEdit,
-	onDelete,
-	getStudents,
-	getSignedUrl,
 	canEdit = () => true,
+	getSignedUrl,
+	getStudents,
+	getComments,
+	onCreateComment,
+	onCreate,
+	onDelete,
+	onEdit,
+	uploads,
 }) => {
 	const { showDialog } = useDialogContext();
 
@@ -83,6 +85,8 @@ const UploadTable = ({
 								onClick: (e, upload) => {
 									showDialog(UploadPreview, {
 										upload,
+										getComments,
+										onCreateComment,
 									});
 								},
 							},

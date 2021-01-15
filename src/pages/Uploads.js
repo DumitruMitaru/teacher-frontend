@@ -9,13 +9,16 @@ import useOnMount from '../hooks/useOnMount';
 
 const Upload = () => {
 	const {
+		createComment,
+		getComments,
 		createUpload,
-		getUploads,
-		getStudents,
-		editUpload,
 		deleteUpload,
+		editUpload,
 		getSignedUrl,
+		getStudents,
+		getUploads,
 	} = useApi();
+
 	const { loading, data: uploads = [], setData: setUploads } = useOnMount(
 		getUploads
 	);
@@ -27,6 +30,8 @@ const Upload = () => {
 					<UploadTable
 						uploads={uploads}
 						getStudents={getStudents}
+						getComments={getComments}
+						onCreateComment={createComment}
 						getSignedUrl={getSignedUrl}
 						onCreate={upload =>
 							createUpload(upload).then(upload =>
