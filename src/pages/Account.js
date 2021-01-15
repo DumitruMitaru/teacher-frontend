@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Card, CardContent } from '@material-ui/core';
 import * as yup from 'yup';
 
 import { LinkedPhoneNumberInput } from '../components/PhoneNumber';
@@ -55,7 +55,7 @@ const Account = () => {
 							value={user.uploadNotifications}
 							label="Notifications for Uploads"
 							onHelperText="Text notifications will be sent to you whenever a student uploads a file. Please ensure that you have provided a phone number above."
-							offHelperText="Text notifications will NOT be sent to you whenever a student uploads a file."
+							offHelperText="You will not receive any notifications when students upload files."
 							onChange={async value => {
 								// For the case that the request takes a long time, the user will see a lag when the switch is flipped
 								try {

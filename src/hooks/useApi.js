@@ -94,7 +94,7 @@ const useApi = () => {
 		getUploads: () => makeRequest('get', 'upload'),
 		getUser: () => makeRequest('get', 'user'),
 		publicCreateComment: (publicProfileId, comment) => makeRequest('post', `public/${publicProfileId}/comment`, comment),
-		publicCreateUpload: (publicProfileId, upload) => makeRequest('post', `public/upload/${publicProfileId}`, upload),
+		publicCreateUpload: (publicProfileId, upload) => makeRequest('post', `public/${publicProfileId}/upload`, upload),
 		publicDeleteUpload: (publicProfileId, id) => makeRequest('delete', `public/${publicProfileId}/upload/${id}`),
 		publicEditUpload: (publicProfileId, id, upload) => makeRequest('put', `public/${publicProfileId}/upload/${id}`, upload),
 		publicGetComments: (publicProfileId, uploadId) => makeRequest('get', `public/${publicProfileId}/upload/${uploadId}/comments`),
