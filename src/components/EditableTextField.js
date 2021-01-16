@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import { IconButton, InputAdornment, Tooltip } from '@material-ui/core';
 import { green, red } from '@material-ui/core/colors';
-import { Create, CheckCircle, Cancel } from '@material-ui/icons';
+import { Create, CheckCircle, Cancel, DeleteForever } from '@material-ui/icons';
 import * as yup from 'yup';
 
 import { LinkedTextInput } from './TextInput';
@@ -13,9 +13,24 @@ const EditableTextField = ({
 	validationSchema,
 	label,
 	LinkedInput = LinkedTextInput,
+	onDelete,
 	...props
 }) => {
 	const [disabled, setDisabled] = useState(true);
+
+	const Button = ({ tooltip, color, isSubmitting, Icon, ...props }) => (
+		<Tooltip title={tooltip}>
+			<IconButton
+				{...props}
+				disabled={isSubmitting}
+				style={{
+					color: isSubmitting ? undefined : color,
+				}}
+			>
+				<Icon />
+			</IconButton>
+		</Tooltip>
+	);
 
 	return (
 		<Formik
@@ -36,7 +51,7 @@ const EditableTextField = ({
 				}
 			}}
 		>
-			{({ isSubmitting, setFieldValue }) => (
+			{({ isSubmitting, setFieldValue, setSubmitting }) => (
 				<Form>
 					<LinkedInput
 						name="value"
@@ -45,41 +60,50 @@ const EditableTextField = ({
 						InputProps={{
 							endAdornment: disabled ? (
 								<InputAdornment position="end">
-									<Tooltip title="Edit">
-										<IconButton
-											onClick={() => setDisabled(false)}
-										>
-											<Create />
-										</IconButton>
-									</Tooltip>
+									<Button
+										tooltip="Edit"
+										onClick={() => setDisabled(false)}
+										Icon={Create}
+									/>
 								</InputAdornment>
 							) : (
 								<>
 									<InputAdornment position="end">
-										<Tooltip title="Cancel">
-											<IconButton
-												onClick={() => {
-													setFieldValue(
-														'value',
-														initialValue || ''
-													);
-													setDisabled(true);
+										<Button
+											tooltip="Cancel"
+											onClick={() => {
+												setFieldValue(
+													'value',
+													initialValue || ''
+												);
+												setDisabled(true);
+											}}
+											isSubmitting={isSubmitting}
+											Icon={Cancel}
+										/>
+										<Button
+											tooltip="Save"
+											color={green[500]}
+											isSubmitting={isSubmitting}
+											Icon={CheckCircle}
+											type="submit"
+										/>
+										{onDelete && (
+											<Button
+												tooltip="Delete"
+												color={red[500]}
+												onClick={async () => {
+													try {
+														setSubmitting(true);
+														await onDelete();
+													} finally {
+														setSubmitting(false);
+													}
 												}}
-												style={{ color: red[500] }}
-												disabled={isSubmitting}
-											>
-												<Cancel />
-											</IconButton>
-										</Tooltip>
-										<Tooltip title="Save">
-											<IconButton
-												type="submit"
-												style={{ color: green[500] }}
-												disabled={isSubmitting}
-											>
-												<CheckCircle />
-											</IconButton>
-										</Tooltip>
+												isSubmitting={isSubmitting}
+												Icon={DeleteForever}
+											/>
+										)}
 									</InputAdornment>
 								</>
 							),

@@ -13,14 +13,15 @@ import UploadPreview from './UploadPreview';
 
 const UploadTable = ({
 	canEdit = () => true,
+	getComments,
 	getSignedUrl,
 	getStudents,
-	getComments,
-	onCreateComment,
-	onEditComment,
 	onCreate,
+	onCreateComment,
 	onDelete,
+	onDeleteComment,
 	onEdit,
+	onEditComment,
 	uploads,
 }) => {
 	const { showDialog } = useDialogContext();
@@ -88,6 +89,7 @@ const UploadTable = ({
 										upload,
 										getComments,
 										onCreateComment,
+										onDeleteComment,
 										onEditComment,
 									});
 								},

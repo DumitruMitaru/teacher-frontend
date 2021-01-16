@@ -6,7 +6,6 @@ import {
 	Grid,
 	List,
 	ListItem,
-	ListItemText,
 	Typography,
 } from '@material-ui/core';
 import { format } from 'date-fns';
@@ -24,6 +23,7 @@ const UploadPreview = ({
 	onClose,
 	getComments,
 	onCreateComment,
+	onDeleteComment,
 	onEditComment,
 }) => {
 	const {
@@ -62,58 +62,57 @@ const UploadPreview = ({
 					style={{ marginBottom: 8 }}
 				>
 					{comments.map(({ Student, User, id, text, createdAt }) => (
-						<ListItem key={id}>
-							<ListItemText
-								primary={
-									<Grid
-										container
-										justify="space-between"
-										alignItems="center"
-									>
-										<Typography>
-											{Student
-												? Student.firstName
-												: User.email}
-										</Typography>
-										<Typography
-											variant="caption"
-											component="div"
-											align="right"
-										>
-											{format(
-												new Date(createdAt),
-												'M/d/Y'
-											)}
-										</Typography>
-									</Grid>
-								}
-								secondary={
-									<EditableTextField
-										value={text}
-										validationSchema={yup
-											.string()
-											.max(1000)
-											.required('Please enter a comment')}
-										onEdit={newText =>
-											onEditComment(id, {
-												text: newText,
-											}).then(() =>
-												setComments(comments =>
-													comments.map(comment =>
-														comment.id === id
-															? {
-																	...comment,
-																	text: newText,
-															  }
-															: comment
-													)
-												)
+						<ListItem key={id} style={{ display: 'block' }}>
+							<Grid
+								container
+								justify="space-between"
+								alignItems="center"
+							>
+								<Typography>
+									{Student ? Student.firstName : User.email}
+								</Typography>
+								<Typography
+									variant="caption"
+									component="div"
+									align="right"
+								>
+									{format(new Date(createdAt), 'M/d/Y')}
+								</Typography>
+							</Grid>
+
+							<EditableTextField
+								value={text}
+								validationSchema={yup
+									.string()
+									.max(1000)
+									.required('Please enter a comment')}
+								onEdit={newText =>
+									onEditComment(id, {
+										text: newText,
+									}).then(() =>
+										setComments(comments =>
+											comments.map(comment =>
+												comment.id === id
+													? {
+															...comment,
+															text: newText,
+													  }
+													: comment
 											)
-										}
-										variant="outlined"
-										multiline
-									/>
+										)
+									)
 								}
+								onDelete={() =>
+									onDeleteComment(id).then(() =>
+										setComments(comments =>
+											comments.filter(
+												comment => comment.id !== id
+											)
+										)
+									)
+								}
+								variant="outlined"
+								multiline
 							/>
 						</ListItem>
 					))}

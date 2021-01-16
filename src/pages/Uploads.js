@@ -11,6 +11,7 @@ const Upload = () => {
 	const {
 		createComment,
 		createUpload,
+		deleteComment,
 		deleteUpload,
 		editComment,
 		editUpload,
@@ -34,6 +35,7 @@ const Upload = () => {
 						getComments={getComments}
 						onCreateComment={createComment}
 						onEditComment={editComment}
+						onDeleteComment={deleteComment}
 						getSignedUrl={getSignedUrl}
 						onCreate={upload =>
 							createUpload(upload).then(upload =>
