@@ -32,7 +32,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ActionMenu = ({
-	student: { id, phoneNumber, publicProfileId, firstName, lastName, email },
+	student: {
+		id,
+		email,
+		firstName,
+		lastName,
+		paymentAmount,
+		paymentInterval,
+		phoneNumber,
+		publicProfileId,
+	},
 	onEdited,
 	onDeleted,
 }) => {
@@ -71,6 +80,8 @@ const ActionMenu = ({
 									lastName,
 									email,
 									phoneNumber,
+									paymentAmount,
+									paymentInterval,
 								},
 								onSubmit: editedStudent =>
 									editStudent(id, editedStudent).then(
